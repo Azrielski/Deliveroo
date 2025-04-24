@@ -1,4 +1,5 @@
 alembic==1.14.1
+aniso8601==10.0.1
 attrs==25.3.0
 bcrypt==4.3.0
 blinker==1.8.2
@@ -12,6 +13,7 @@ Flask-Bcrypt==1.0.1
 Flask-Cors==5.0.0
 Flask-JWT-Extended==4.6.0
 Flask-Migrate==4.1.0
+Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.1.1
 greenlet==3.1.1
 importlib_metadata==8.5.0
@@ -27,14 +29,17 @@ packaging==24.2
 pipenv==2024.4.1
 pkgutil_resolve_name==1.3.10
 platformdirs==4.3.6
-psycopg2-binary==2.9.10
+psycopg2-binary==2.9.9
 PyJWT==2.9.0
 python-dotenv==1.0.1
+pytz==2024.2
 PyYAML==6.0.2
 referencing==0.35.1
 rpds-py==0.20.1
+setuptools==70.3.0
 six==1.17.0
-SQLAlchemy==2.0.39
+SQLAlchemy==2.0.29
+sqlalchemy-serializer==1.4.22
 typing_extensions==4.12.2
 virtualenv==20.29.3
 Werkzeug==3.0.6
