@@ -4,6 +4,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Navbar from './components/Navbar'
 import Hero from './components/Hero';
 import Services from './components/Services';
+import Contact from './components/Contact';
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
       <Navbar />
       <Hero />
       <Services />
+      <Contact />
     </>
   )
 }
