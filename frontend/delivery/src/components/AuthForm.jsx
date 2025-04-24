@@ -54,8 +54,8 @@ function AuthForm() {
                 </h2>
                 <p className="form-description">
                   {isLogin
-                    ? 'Log in to order your favorite food'
-                    : 'Sign up to order delicious food from the best restaurants'}
+                    ? 'Log in to manage all your deliveries'
+                    : 'Sign up to order deliveries from the best vendors'}
                 </p>
                 {!isLogin && (
                   <div className="input-container">
