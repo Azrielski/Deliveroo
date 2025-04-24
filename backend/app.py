@@ -12,7 +12,7 @@ CORS(app)
 # App configuration
  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'GROUP_11'
+app.config['JWT_SECRET_KEY'] = 'bb7523de87660149c8e11db73e41bce56afbbe1ea1324a731c97c415b493911c'
 
 # Initialize extensions
 db.init_app(app)
