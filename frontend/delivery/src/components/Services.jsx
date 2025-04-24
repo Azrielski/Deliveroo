@@ -22,7 +22,7 @@ function Services() {
       <div className="content-column">
         {/* Headline text */}
         <h2 className="headline">
-          Discover why thousands of small businesses choose Pickup Mtaani to grow their online business.
+          Discover why thousands of small businesses choose Deliveroo to grow their online business.
         </h2>
 
         {/* Grid container for the statistics */}
