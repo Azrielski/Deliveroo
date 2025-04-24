@@ -28,13 +28,13 @@ class UsersResource(Resource):
     def get(self):
         users = User.query.all()
         if users:
-            return jsonify([{
+            return [{
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
                 "is_admin": user.is_admin
-            } for user in users]), 200
-        return jsonify({"message": "No users found"}), 404
+            } for user in users], 200
+        return {"message": "No users found"}, 404
 
 
 class UserResource(Resource):

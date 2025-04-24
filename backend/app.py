@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 # App configuration
- 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:deliveroo2650@localhost:5432/deliveroo'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'bb7523de87660149c8e11db73e41bce56afbbe1ea1324a731c97c415b493911c'
 
