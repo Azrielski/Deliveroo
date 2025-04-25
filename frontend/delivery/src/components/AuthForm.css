@@ -62,12 +62,12 @@
   }
   
   .tab-button:hover {
-    color: #14b8a6;
+    color: #4682b4;
   }
   
   .tab-button.active {
-    color: #14b8a6;
-    border-bottom: 3px solid #14b8a6;
+    color: #4682b4;
+    border-bottom: 3px solid #4682b4;
   }
   
   .form-content {
@@ -136,7 +136,7 @@
   }
   
   .input-field:focus {
-    border-color: #14b8a6;
+    border-color: #4682b4;
     box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
   }
   
@@ -164,7 +164,7 @@
   
   .submit-button {
     width: 100%;
-    background-color: #14b8a6;
+    background-color: #4682b4;
     color: #ffffff;
     font-weight: 600;
     padding: 0.875rem 1.5rem;
@@ -180,7 +180,7 @@
   }
   
   .submit-button:hover {
-    background-color: #0d9488;
+    background-color: #4682b4;
     transform: translateY(-2px);
   }
   
@@ -279,14 +279,14 @@
   }
   
   .link {
-    color: #14b8a6;
+    color: #4682b4;
     font-weight: 500;
     text-decoration: none;
     transition: color 0.2s;
   }
   
   .link:hover {
-    color: #0d9488;
+    color: #4682b4;
     text-decoration: underline;
   }
   
@@ -309,7 +309,7 @@
   }
   
   .back-to-home:hover {
-    color: #14b8a6;
+    color: #4682b4;
   }
   
   .arrow-icon {
