@@ -1,38 +1,50 @@
 from flask import current_app, render_template_string, request
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-import os
+import requests
+import json
 
 def send_email(to_email, subject, html_content):
-    """Send email using SendGrid"""
-    sg_api_key = current_app.config.get('SENDGRID_API_KEY')
-    from_email = current_app.config.get('EMAIL_SENDER')
+    """Send email using Linkmonk API"""
+    linkmonk_api_url = current_app.config.get('LINKMONK_API_URL')
+    linkmonk_api_key = current_app.config.get('LINKMONK_API_KEY')
     
-    if not sg_api_key:
-        current_app.logger.warning("SendGrid API key not configured. Email not sent.")
+    if not linkmonk_api_url or not linkmonk_api_key:
+        current_app.logger.warning("Linkmonk API credentials not configured. Email not sent.")
         return False
     
-    message = Mail(
-        from_email=from_email,
-        to_emails=to_email,
-        subject=subject,
-        html_content=html_content
-    )
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {linkmonk_api_key}'
+    }
+    
+    payload = {
+        'to': [to_email],
+        'subject': subject,
+        'content_type': 'html',
+        'body': html_content,
+        'from_email': current_app.config.get('EMAIL_SENDER')
+    }
     
     try:
-        sg = SendGridAPIClient(sg_api_key)
-        response = sg.send(message)
-        current_app.logger.info(f"Email sent to {to_email}, status code: {response.status_code}")
-        return True
+        response = requests.post(
+            f"{linkmonk_api_url}/api/send",
+            headers=headers,
+            data=json.dumps(payload)
+        )
+        
+        if response.status_code == 200:
+            current_app.logger.info(f"Email sent to {to_email}, status code: {response.status_code}")
+            return True
+        else:
+            current_app.logger.error(f"Linkmonk API error: {response.text}")
+            return False
     except Exception as e:
-        current_app.logger.error(f"Error sending email: {str(e)}")
+        current_app.logger.error(f"Error sending email via Linkmonk: {str(e)}")
         return False
 
 def send_verification_email(to_email, token):
     """Send email verification link"""
     subject = "Verify Your Deliveroo Account"
     verification_url = f"{request.host_url.rstrip('/')}/verify-email?token={token}"
-    
     html_content = render_template_string("""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Welcome to Deliveroo!</h2>
@@ -44,14 +56,12 @@ def send_verification_email(to_email, token):
         <p>Best regards,<br>The Deliveroo Team</p>
     </div>
     """, verification_url=verification_url)
-    
     return send_email(to_email, subject, html_content)
 
 def send_password_reset_email(to_email, token):
     """Send password reset link"""
     subject = "Reset Your Deliveroo Password"
     reset_url = f"{request.host_url.rstrip('/')}/reset-password?token={token}"
-    
     html_content = render_template_string("""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Password Reset Request</h2>
@@ -64,5 +74,9 @@ def send_password_reset_email(to_email, token):
         <p>Best regards,<br>The Deliveroo Team</p>
     </div>
     """, reset_url=reset_url)
-    
     return send_email(to_email, subject, html_content)
+
+
+
+
+

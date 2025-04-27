@@ -18,14 +18,17 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
+from marshmallow import ValidationError
+
 def validate_json(schema):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             data = request.get_json()
-            errors = schema().validate(data)
-            if errors:
-                return jsonify(errors), 400
-            return f(data, *args, **kwargs)
+            try:
+                validated_data = schema().load(data)  # <-- properly deserialize and validate
+            except ValidationError as err:
+                return jsonify(err.messages), 400
+            return f(validated_data, *args, **kwargs)  # pass the validated (cleaned) data
         return decorated_function
     return decorator

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_migrate import Migrate
 
-db = SQLAlchemy()
+from models import db
 mail = Mail()
 migrate = Migrate()
 
