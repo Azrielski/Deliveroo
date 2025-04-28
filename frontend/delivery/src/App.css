@@ -1,1 +1,339 @@
+/* --- General Styles --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    background-color: #f8f9fa; /* Light grey background for the whole page */
+    color: #333;
+  }
+  
+  h1, h2, h3 {
+    color: #343a40; /* Darker grey for headings */
+  }
+  
+  /* --- Dashboard Containers --- */
+  .user-dashboard,
+  .admin-dashboard {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff; /* White background for dashboard content areas */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .user-dashboard h1,
+  .admin-dashboard h1 {
+    color: #4a6a8a; /* A slightly softer blue for main headings */
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  /* --- Form Styling (Auth, Parcel Creation) --- */
+  .auth-form,
+  .parcel-form {
+    background-color: #5B7AA0; /* Muted blue from the image */
+    color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    margin: 20px 0 40px 0; /* Add some margin */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .auth-form h2,
+  .parcel-form h2 {
+    color: #ffffff;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 500;
+  }
+  
+  /* --- Input Fields and Select --- */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select {
+    display: block;
+    width: calc(100% - 24px); /* Full width minus padding */
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da; /* Light grey border */
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    color: #333;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  select:focus {
+    border-color: #5B7AA0; /* Highlight with theme blue on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(91, 122, 160, 0.25); /* Subtle glow */
+  }
+  
+  /* Placeholder text styling */
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #aaa;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #aaa;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: #aaa;
+  }
+  
+  /* --- Button Styling --- */
+  button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    margin-right: 10px; /* Space between buttons */
+    margin-top: 10px; /* Space above buttons when they wrap */
+    font-weight: 500;
+  }
+  
+  /* Primary button style (e.g., Login, Create Parcel) */
+  button[type="submit"],
+  .parcel-form button {
+    background-color: #ffffff; /* White background like "Find Services" */
+    color: #5B7AA0; /* Blue text */
+    border: 1px solid #5B7AA0; /* Optional: add a border */
+  }
+  
+  button[type="submit"]:hover,
+  .parcel-form button:hover {
+    background-color: #f0f4f8; /* Slightly off-white on hover */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  /* Secondary/Action button style (e.g., Cancel, Change Destination) */
+  .parcel-list button {
+    background-color: #6c757d; /* Grey for secondary actions */
+    color: #ffffff;
+  }
+  
+  .parcel-list button:hover {
+    background-color: #5a6268;
+  }
+  
+  /* Specific styling for Cancel maybe */
+  .parcel-list button:first-of-type { /* Targeting the Cancel button */
+    background-color: #dc3545; /* Red for cancel/destructive actions */
+    color: #ffffff;
+  }
+  
+  .parcel-list button:first-of-type:hover {
+    background-color: #c82333;
+  }
+  
+  
+  /* --- List Styling (ParcelList, AdminPanel) --- */
+  .parcel-list,
+  .admin-panel {
+    margin-top: 30px;
+  }
+  
+  .parcel-list h2,
+  .admin-panel h2 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .parcel-list ul,
+  .admin-panel ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .parcel-list li,
+  .admin-panel li {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .parcel-list p,
+  .admin-panel li > strong, /* Direct strong child for Parcel ID */
+  .admin-panel label {
+    margin: 0 0 10px 0; /* Consistent spacing */
+    line-height: 1.5;
+  }
+  
+  .parcel-list p strong,
+  .admin-panel li > strong {
+    color: #5B7AA0; /* Use theme blue for emphasis */
+    margin-right: 5px;
+  }
+  
+  /* --- Admin Panel Specifics --- */
+  .admin-panel label {
+    display: block; /* Make labels block elements */
+    font-weight: 500;
+    margin-bottom: 5px; /* Space between label and input/select */
+  }
+  
+  .admin-panel select {
+    margin-bottom: 15px; /* Ensure select has same bottom margin as inputs */
+  }
+  
+  .admin-panel input[type="text"] {
+   margin-top: 5px; /* Ensure space below label */
+  }
+  
+  /* --- Map Display --- */
+  /* The map itself uses inline styles, but you might want to style its container */
+  .admin-dashboard > div:last-child { /* Targeting the GoogleMapDisplay container */
+    margin-top: 30px;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures the map stays within the rounded corners */
+    border: 1px solid #e0e0e0;
+  }
 
+
+  /* --- Responsive Design Adjustments --- */
+
+/* Medium Screens (Tablets, smaller laptops) */
+@media (max-width: 992px) {
+    .user-dashboard,
+    .admin-dashboard {
+      max-width: 90%; /* Allow slightly more screen usage */
+      padding: 25px;
+    }
+  }
+  
+  /* Small Screens (Mobile Phones) */
+  @media (max-width: 767px) {
+    body {
+       /* Reduce base font size slightly for small screens */
+       /* font-size: 14px; */ /* Optional: uncomment if text feels too large */
+    }
+  
+    .user-dashboard,
+    .admin-dashboard {
+      max-width: 100%; /* Allow full width usage */
+      margin: 20px 10px; /* Reduce top/bottom and side margins */
+      padding: 20px 15px; /* Reduce padding further */
+      box-shadow: none; /* Optional: remove shadow on mobile for cleaner look */
+      border-radius: 0; /* Optional: remove border radius if going edge-to-edge */
+    }
+  
+    .user-dashboard h1,
+    .admin-dashboard h1 {
+      font-size: 1.8rem; /* Slightly smaller main heading */
+      margin-bottom: 20px;
+    }
+  
+    .auth-form,
+    .parcel-form {
+      padding: 20px; /* Reduce form padding */
+      margin-left: 0; /* Remove potential inherited margins */
+      margin-right: 0;
+    }
+  
+    .auth-form h2,
+    .parcel-form h2 {
+      font-size: 1.4rem; /* Smaller form headings */
+      margin-bottom: 20px;
+    }
+  
+    /* Adjust input/select width calculation if base padding changed significantly */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    select {
+      /* The calc(100% - 24px) should still work if padding is 12px */
+      /* If you changed input padding, adjust the '24px' accordingly (padding-left + padding-right) */
+      font-size: 0.95rem; /* Slightly smaller font in inputs */
+    }
+  
+    button {
+      padding: 10px 15px; /* Slightly less horizontal padding */
+      font-size: 0.95rem;
+    }
+  
+    /* Ensure buttons stack cleanly if needed */
+    .parcel-list li > button { /* Target buttons inside parcel list items */
+        display: block; /* Make buttons take full width available */
+        width: calc(100% - 30px); /* Adjust width considering button padding */
+        margin-bottom: 10px; /* Add space between stacked buttons */
+        margin-right: 0; /* Remove right margin */
+    }
+     .parcel-list li > button:last-of-type {
+         margin-bottom: 0; /* No margin on the last button in a stack */
+     }
+  
+  
+    .parcel-list li,
+    .admin-panel li {
+      padding: 15px; /* Reduce padding inside list items */
+    }
+  
+    .parcel-list h2,
+    .admin-panel h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+  
+    .admin-panel label {
+      font-size: 0.9rem;
+    }
+  
+    .admin-dashboard > div:last-child { /* Map container */
+      margin-top: 20px; /* Reduce margin above map */
+    }
+  }
+  
+  /* Very Small Screens (Optional Refinements) */
+  @media (max-width: 480px) {
+      .user-dashboard,
+      .admin-dashboard {
+        margin: 10px 5px; /* Minimal margins */
+        padding: 15px 10px; /* Minimal padding */
+      }
+  
+      .user-dashboard h1,
+      .admin-dashboard h1 {
+        font-size: 1.6rem;
+      }
+  
+      .auth-form h2,
+      .parcel-form h2 {
+        font-size: 1.3rem;
+      }
+  
+      button {
+          width: 100%; /* Force all buttons full width */
+          box-sizing: border-box; /* Include padding/border in width */
+          margin-right: 0;
+          margin-bottom: 10px;
+      }
+  
+      .parcel-list li > button,
+      .auth-form button,
+      .parcel-form button {
+          width: 100%;
+          margin-bottom: 10px;
+      }
+      .parcel-list li > button:last-of-type,
+      .auth-form button:last-of-type, /* If multiple buttons exist */
+      .parcel-form button:last-of-type {
+          margin-bottom: 0;
+      }
+  
+  }
