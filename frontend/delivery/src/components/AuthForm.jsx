@@ -6,7 +6,8 @@ function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -17,7 +18,7 @@ function AuthForm() {
     if (isLogin) {
       alert(`Login with email: ${email}`);
     } else {
-      alert(`Signup for ${name} with email: ${email}`);
+      alert(`Signup for ${firstName} ${lastName} with email: ${email}`);
     }
   };
 
@@ -29,7 +30,7 @@ function AuthForm() {
     <div className="auth-container">
       <div className="form-wrapper">
         <div className="logo-container" onClick={goToHome}>
-          <img src="//logotyp.us/file/deliveroo.svg" alt="Deliveroo" className="logo" />
+          <h3 className="logo">Deliveroo</h3>
         </div>
         <div className="form-card">
           <div className="tabs">
@@ -58,23 +59,44 @@ function AuthForm() {
                     : 'Sign up to order deliveries from the best vendors'}
                 </p>
                 {!isLogin && (
-                  <div className="input-container">
-                    <label htmlFor="name" className="label">
-                      Name
-                    </label>
-                    <div className="input-field-wrapper">
-                      <svg className="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                      </svg>
-                      <input
-                        id="name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Your full name"
-                        className="input-field with-icon"
-                        required
-                      />
+                  <div className="name-row">
+                    <div className="input-container half-width">
+                      <label htmlFor="firstName" className="label">
+                        First Name
+                      </label>
+                      <div className="input-field-wrapper">
+                        <svg className="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <input
+                          id="firstName"
+                          type="text"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          placeholder="First name"
+                          className="input-field with-icon"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="input-container half-width">
+                      <label htmlFor="lastName" className="label">
+                        Last Name
+                      </label>
+                      <div className="input-field-wrapper">
+                        <svg className="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <input
+                          id="lastName"
+                          type="text"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          placeholder="Last name"
+                          className="input-field with-icon"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
