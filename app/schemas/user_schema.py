@@ -8,6 +8,16 @@ def validate_password_match(data):
 
 # Schema for User Registration
 class UserRegisterSchema(Schema):
+    first_name = fields.String(
+        required=True,
+        validate=validate.Length(min=1, error="first name must not be empty."),
+        error_messages={"required": "First name is required."}
+    )
+    second_name = fields.String(
+        required=True,
+        validate=validate.Length(min=1, error="Second name must not be empty."),
+        error_messages={"required": "Second name is required."}
+    )
     username = fields.String(
         required=True,
         validate=validate.Length(min=1, error="Username must not be empty."),

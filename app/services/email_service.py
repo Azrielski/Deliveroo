@@ -1,50 +1,32 @@
 from flask import current_app, render_template_string, request
-import requests
-import json
+from flask_mail import Mail, Message
+from flask import url_for
+# Initialize Flask-Mail
+mail = Mail()
 
 def send_email(to_email, subject, html_content):
-    """Send email using Linkmonk API"""
-    linkmonk_api_url = current_app.config.get('LINKMONK_API_URL')
-    linkmonk_api_key = current_app.config.get('LINKMONK_API_KEY')
-    
-    if not linkmonk_api_url or not linkmonk_api_key:
-        current_app.logger.warning("Linkmonk API credentials not configured. Email not sent.")
-        return False
-    
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {linkmonk_api_key}'
-    }
-    
-    payload = {
-        'to': [to_email],
-        'subject': subject,
-        'content_type': 'html',
-        'body': html_content,
-        'from_email': current_app.config.get('EMAIL_SENDER')
-    }
-    
+    """Send email using Flask-Mail (SMTP)"""
     try:
-        response = requests.post(
-            f"{linkmonk_api_url}/api/send",
-            headers=headers,
-            data=json.dumps(payload)
+        msg = Message(
+            subject=subject,
+            recipients=[to_email],
+            html=html_content,
+            sender=current_app.config.get('MAIL_DEFAULT_SENDER')
         )
-        
-        if response.status_code == 200:
-            current_app.logger.info(f"Email sent to {to_email}, status code: {response.status_code}")
-            return True
-        else:
-            current_app.logger.error(f"Linkmonk API error: {response.text}")
-            return False
+        mail.send(msg)
+        current_app.logger.info(f"Email sent to {to_email}")
+        return True
     except Exception as e:
-        current_app.logger.error(f"Error sending email via Linkmonk: {str(e)}")
+        current_app.logger.error(f"Error sending email via SMTP: {str(e)}")
         return False
+
+
 
 def send_verification_email(to_email, token):
     """Send email verification link"""
     subject = "Verify Your Deliveroo Account"
-    verification_url = f"{request.host_url.rstrip('/')}/verify-email?token={token}"
+    # Generate the correct URL for the verification route
+    verification_url = url_for('auth.verify_email', token=token, _external=True)
     html_content = render_template_string("""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Welcome to Deliveroo!</h2>
@@ -57,6 +39,7 @@ def send_verification_email(to_email, token):
     </div>
     """, verification_url=verification_url)
     return send_email(to_email, subject, html_content)
+
 
 def send_password_reset_email(to_email, token):
     """Send password reset link"""
@@ -75,8 +58,5 @@ def send_password_reset_email(to_email, token):
     </div>
     """, reset_url=reset_url)
     return send_email(to_email, subject, html_content)
-
-
-
 
 
