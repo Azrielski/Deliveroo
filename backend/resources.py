@@ -1,28 +1,23 @@
 from flask import request, jsonify
-from flask_restful import Resource
-from werkzeug.exceptions import BadRequest, NotFound
+from flask_restful import Resource, abort
+from werkzeug.exceptions import BadRequest
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from models import db, User, Parcel, TrackingUpdate, Rating
 
-# Utility function to handle user retrieval
-
 def get_user_or_404(user_id):
     user = User.query.get(user_id)
     if not user:
-        raise NotFound(f"User with id {user_id} not found")
+        abort(404, message=f"User with id {user_id} not found")
     return user
 
-# Utility function to check if the logged-in user is the owner
-
 def is_owner_or_admin(user_id):
-    current_user_id = get_jwt_identity() # Get the current user's ID from the JWT token
+    current_user_id = get_jwt_identity()
     if current_user_id != user_id:
         user = get_user_or_404(user_id)
         if not user.is_admin:
             raise BadRequest("You can only modify your own data or admin data")
     return True
-
 
 class UsersResource(Resource):
     def get(self):
@@ -36,16 +31,15 @@ class UsersResource(Resource):
             } for user in users], 200
         return {"message": "No users found"}, 404
 
-
 class UserResource(Resource):
     def get(self, id):
         user = get_user_or_404(id)
-        return jsonify({
+        return {
             "id": user.id,
             "username": user.username,
             "email": user.email,
             "is_admin": user.is_admin
-        }), 200
+        }, 200
 
     @jwt_required()
     def delete(self, id):
@@ -53,23 +47,22 @@ class UserResource(Resource):
         is_owner_or_admin(id)
         db.session.delete(user)
         db.session.commit()
-        return jsonify({"message": f"User {user.username} deleted successfully"}), 204
-
+        return {"message": f"User {user.username} deleted successfully"}, 204
 
 class ParcelsResource(Resource):
     @jwt_required()
     def get(self):
         parcels = Parcel.query.all()
         if parcels:
-            return jsonify([{
+            return [{
                 "id": p.id,
                 "description": p.description,
                 "weight": p.weight,
                 "destination": p.destination,
                 "status": p.status,
                 "user_id": p.user_id
-            } for p in parcels]), 200
-        return jsonify({"message": "No parcels found"}), 404
+            } for p in parcels], 200
+        return {"message": "No parcels found"}, 404
 
     @jwt_required()
     def post(self):
@@ -86,64 +79,56 @@ class ParcelsResource(Resource):
             raise BadRequest(f"Missing field: {e.args[0]}")
         db.session.add(parcel)
         db.session.commit()
-        
-        return jsonify({"message": f"Parcel {parcel.description} created", "id": parcel.id}), 201
-
+        return {"message": f"Parcel {parcel.description} created", "id": parcel.id}, 201
 
 class ParcelResource(Resource):
     @jwt_required()
     def get(self, id):
         p = Parcel.query.get_or_404(id)
-        return jsonify({
+        return {
             "id": p.id,
             "description": p.description,
             "weight": p.weight,
             "destination": p.destination,
             "status": p.status,
             "user_id": p.user_id
-        }), 200
+        }, 200
 
     @jwt_required()
     def put(self, id):
         data = request.get_json()
         p = Parcel.query.get_or_404(id)
-        
-        # Ensuring  only the owner or an admin can update the parcel
-
         is_owner_or_admin(p.user_id)
-        
+
         p.description = data.get('description', p.description)
         p.weight = data.get('weight', p.weight)
         p.destination = data.get('destination', p.destination)
         p.status = data.get('status', p.status)
 
         db.session.commit()
-        return jsonify({"message": f"Parcel {p.id} updated successfully"}), 200
+        return {"message": f"Parcel {p.id} updated successfully"}, 200
 
     @jwt_required()
     def delete(self, id):
         p = Parcel.query.get_or_404(id)
-        
-        # Ensuring only the owner or an admin can delete the parcel
         is_owner_or_admin(p.user_id)
 
         db.session.delete(p)
         db.session.commit()
-        return jsonify({"message": f"Parcel {p.id} deleted successfully"}), 204
-
+        return {"message": f"Parcel {p.id} deleted successfully"}, 204
 
 class TrackingUpdatesResource(Resource):
     @jwt_required()
     def get(self):
         updates = TrackingUpdate.query.all()
         if updates:
-            return jsonify([{
+            return [{
                 "id": u.id,
                 "update_text": u.update_text,
                 "timestamp": u.timestamp.isoformat(),
                 "parcel_id": u.parcel_id
-            } for u in updates]), 200
-        return jsonify({"message": "No tracking updates found"}), 404
+            } for u in updates], 200
+        return {"message": "No tracking updates found"}, 404
 
     @jwt_required()
     def post(self):
@@ -157,19 +142,18 @@ class TrackingUpdatesResource(Resource):
             raise BadRequest(f"Missing field: {e.args[0]}")
         db.session.add(update)
         db.session.commit()
-        return jsonify({"message": f"Tracking update for parcel {update.parcel_id} added", "id": update.id}), 201
-
+        return {"message": f"Tracking update for parcel {update.parcel_id} added", "id": update.id}, 201
 
 class TrackingUpdateResource(Resource):
     @jwt_required()
     def get(self, id):
         u = TrackingUpdate.query.get_or_404(id)
-        return jsonify({
+        return {
             "id": u.id,
             "update_text": u.update_text,
             "timestamp": u.timestamp.isoformat(),
             "parcel_id": u.parcel_id
-        }), 200
+        }, 200
 
     @jwt_required()
     def put(self, id):
@@ -177,29 +161,28 @@ class TrackingUpdateResource(Resource):
         u = TrackingUpdate.query.get_or_404(id)
         u.update_text = data.get('update_text', u.update_text)
         db.session.commit()
-        return jsonify({"message": f"Tracking update for parcel {u.parcel_id} updated"}), 200
+        return {"message": f"Tracking update for parcel {u.parcel_id} updated"}, 200
 
     @jwt_required()
     def delete(self, id):
         u = TrackingUpdate.query.get_or_404(id)
         db.session.delete(u)
         db.session.commit()
-        return jsonify({"message": f"Tracking update for parcel {u.parcel_id} deleted"}), 204
-
+        return {"message": f"Tracking update for parcel {u.parcel_id} deleted"}, 204
 
 class RatingsResource(Resource):
     @jwt_required()
     def get(self):
         ratings = Rating.query.all()
         if ratings:
-            return jsonify([{
+            return [{
                 "id": r.id,
                 "stars": r.stars,
                 "feedback": r.feedback,
                 "parcel_id": r.parcel_id,
                 "user_id": r.user_id
-            } for r in ratings]), 200
-        return jsonify({"message": "No ratings found"}), 404
+            } for r in ratings], 200
+        return {"message": "No ratings found"}, 404
 
     @jwt_required()
     def post(self):
@@ -215,20 +198,19 @@ class RatingsResource(Resource):
             raise BadRequest(f"Missing field: {e.args[0]}")
         db.session.add(rating)
         db.session.commit()
-        return jsonify({"message": f"Rating for parcel {rating.parcel_id} added", "id": rating.id}), 201
-
+        return {"message": f"Rating for parcel {rating.parcel_id} added", "id": rating.id}, 201
 
 class RatingResource(Resource):
     @jwt_required()
     def get(self, id):
         r = Rating.query.get_or_404(id)
-        return jsonify({
+        return {
             "id": r.id,
             "stars": r.stars,
             "feedback": r.feedback,
             "parcel_id": r.parcel_id,
             "user_id": r.user_id
-        }), 200
+        }, 200
 
     @jwt_required()
     def put(self, id):
@@ -237,17 +219,14 @@ class RatingResource(Resource):
         r.stars = data.get('stars', r.stars)
         r.feedback = data.get('feedback', r.feedback)
         db.session.commit()
-        return jsonify({"message": f"Rating {r.id} updated"}), 200
+        return {"message": f"Rating {r.id} updated"}, 200
 
     @jwt_required()
     def delete(self, id):
         r = Rating.query.get_or_404(id)
         db.session.delete(r)
         db.session.commit()
-        return jsonify({"message": f"Rating {r.id} deleted"}), 204
-
-
-# Registering all routes
+        return {"message": f"Rating {r.id} deleted"}, 204
 
 def register_routes(api):
     api.add_resource(UsersResource, '/users')
