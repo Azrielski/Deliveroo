@@ -9,7 +9,7 @@ from resources import register_routes
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///deliveroo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+app.config['group4'] = 'your_jwt_secret_key'
 
 db.init_app(app)
 api = Api(app)
