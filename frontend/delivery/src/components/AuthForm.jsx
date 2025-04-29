@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './AuthForm.css';
 
 function AuthForm() {
@@ -11,14 +11,39 @@ function AuthForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  const validate = () => {
+    const newErrors = {};
+    if (isLogin) {
+      if (!email) newErrors.email = 'Email is required';
+      if (!password) newErrors.password = 'Password is required';
+    } else {
+      if (!firstName) newErrors.firstName = 'First name is required';
+      if (!lastName) newErrors.lastName = 'Last name is required';
+      if (!email) newErrors.email = 'Email is required';
+      else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
+      if (!password) newErrors.password = 'Password is required';
+      else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+      if (!confirmPassword) newErrors.confirmPassword = 'Please confirm your password';
+      else if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+    }
+    return newErrors;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isLogin) {
-      alert(`Login with email: ${email}`);
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
     } else {
-      alert(`Signup for ${firstName} ${lastName} with email: ${email}`);
+      setErrors({});
+      if (isLogin) {
+        alert(`Login with email: ${email}`);
+      } else {
+        alert(`Signup for ${firstName} ${lastName} with email: ${email}`);
+      }
     }
   };
 
@@ -74,10 +99,12 @@ function AuthForm() {
                           value={firstName}
                           onChange={(e) => setFirstName(e.target.value)}
                           placeholder="First name"
-                          className="input-field with-icon"
+                          className={`input-field with-icon ${errors.firstName ? 'input-error' : ''}`}
                           required
+                          aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                         />
                       </div>
+                      {errors.firstName && <p id="firstName-error" className="error-message">{errors.firstName}</p>}
                     </div>
                     <div className="input-container half-width">
                       <label htmlFor="lastName" className="label">
@@ -93,10 +120,12 @@ function AuthForm() {
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
                           placeholder="Last name"
-                          className="input-field with-icon"
+                          className={`input-field with-icon ${errors.lastName ? 'input-error' : ''}`}
                           required
+                          aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                         />
                       </div>
+                      {errors.lastName && <p id="lastName-error" className="error-message">{errors.lastName}</p>}
                     </div>
                   </div>
                 )}
@@ -114,10 +143,12 @@ function AuthForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="your@email.com"
-                      className="input-field with-icon"
+                      className={`input-field with-icon ${errors.email ? 'input-error' : ''}`}
                       required
+                      aria-describedby={errors.email ? 'email-error' : undefined}
                     />
                   </div>
+                  {errors.email && <p id="email-error" className="error-message">{errors.email}</p>}
                 </div>
                 <div className="input-container">
                   <label htmlFor="password" className="label">
@@ -133,8 +164,9 @@ function AuthForm() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={isLogin ? "Your password" : "Create a password"}
-                      className="input-field with-icon"
+                      className={`input-field with-icon ${errors.password ? 'input-error' : ''}`}
                       required
+                      aria-describedby={errors.password ? 'password-error' : undefined}
                     />
                     <button 
                       type="button" 
@@ -154,6 +186,7 @@ function AuthForm() {
                       )}
                     </button>
                   </div>
+                  {errors.password && <p id="password-error" className="error-message">{errors.password}</p>}
                 </div>
                 {!isLogin && (
                   <div className="input-container">
@@ -170,8 +203,9 @@ function AuthForm() {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Confirm your password"
-                        className="input-field with-icon"
+                        className={`input-field with-icon ${errors.confirmPassword ? 'input-error' : ''}`}
                         required
+                        aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
                       />
                       <button 
                         type="button" 
@@ -191,6 +225,7 @@ function AuthForm() {
                         )}
                       </button>
                     </div>
+                    {errors.confirmPassword && <p id="confirmPassword-error" className="error-message">{errors.confirmPassword}</p>}
                   </div>
                 )}
                 <button type="submit" className="submit-button">
@@ -198,9 +233,9 @@ function AuthForm() {
                 </button>
                 {isLogin && (
                   <p className="forgot-password">
-                    <a href="#" className="link">
+                    <Link to="/forgot-password" className="link">
                       Forgot your password?
-                    </a>
+                    </Link>
                   </p>
                 )}
               </div>

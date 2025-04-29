@@ -8,6 +8,7 @@ import Services from './components/Services';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AuthForm from './components/AuthForm'; 
+import ForgotPassword from './components/ForgotPassword';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Footer />
           </>
         } />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/auth" element={<AuthForm />} />
       </Routes>
     </Router>
