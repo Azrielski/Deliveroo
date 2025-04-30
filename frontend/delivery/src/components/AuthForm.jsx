@@ -241,7 +241,7 @@ function AuthForm() {
               </div>
             </form>
           </div>
-          <div className="social-login">
+          {/* <div className="social-login">
             <div className="divider">
               <div className="line"></div>
               <span className="divider-text">or continue with</span>
@@ -264,7 +264,7 @@ function AuthForm() {
                 <span>Facebook</span>
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
         <p className="terms">
           By {isLogin ? 'logging in' : 'signing up'}, you agree to our{' '}
