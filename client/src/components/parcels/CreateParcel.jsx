@@ -1,84 +1,81 @@
-import React from 'react';
-import './CreateParcel.css'; // External CSS
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ParcelContext from '../context/ParcelContext';
 
-function CreateParcel() {
-  const weightOptions = [
-    { label: '0-5 kg', value: '5' },
-    { label: '5-10 kg', value: '10' },
-    { label: '10+ kg', value: '15' }
-  ];
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const formData = {
-      description: event.target.description.value,
-      weight: event.target.weight.value,
-      pickup: event.target.pickup.value,
-      destination: event.target.destination.value
-    };
-    alert('Order Created!\n' + JSON.stringify(formData, null, 2));
-    event.target.reset();
-  }
+function CreateParcel(){
+  const { createParcel } = useContext(ParcelContext);
+  const [formData, setFormData] = useState({
+    pickup_address: '',
+    destination_address: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  function renderOptions(options) {
-    return options.map((option) => (
-      <option key={option.value} value={option.value}>
-        {option.label}
-      </option>
-    ));
-  }
+  const isFormInvalid =
+  !formData.pickup_address || !formData.destination_address || submitting;
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+    
+    try {
+      await createParcel(formData);
+      setFormData({ pickup_address: '', destination_address: '' });
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Failed to create parcel. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
-    <div className="container">
-      <h2>Create New Delivery Order</h2>
-      <form className="parcel-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="description">Package Description</label>
-          <input 
-            type="text" 
-            id="description" 
-            name="description" 
-            required 
+    <div className="p-4 bg-gray-100 rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Create New Parcel</h2>
+      
+      {error && <div className="mb-4 text-red-500">{error}</div>}
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div>
+          <label className="block text-sm font-medium">Pickup Address</label>
+          <input
+            type="text"
+            value={formData.pickup_address}
+            onChange={(e) => setFormData({...formData, pickup_address: e.target.value})}
+            className="w-full p-2 border rounded"
+            required
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="weight">Weight Category</label>
-          <select id="weight" name="weight" required>
-            {renderOptions(weightOptions)}
-          </select>
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="pickup">Pickup Location</label>
-          <input 
-            type="text" 
-            id="pickup" 
-            name="pickup" 
-            required 
+        <div>
+          <label className="block text-sm font-medium">Destination Address</label>
+          <input
+            type="text"
+            value={formData.destination_address}
+            onChange={(e) => setFormData({...formData, destination_address: e.target.value})}
+            className="w-full p-2 border rounded"
+            required
           />
         </div>
-
-        <div className="form-group">
-          <label htmlFor="destination">Destination</label>
-          <input 
-            type="text" 
-            id="destination" 
-            name="destination" 
-            required 
-          />
-        </div>
-
-        <button type="submit" className="submit-btn">
-          Create Order
+        <button
+          type="submit"
+          disabled={isFormInvalid}
+          className={`px-4 py-2 text-white rounded ${
+            isFormInvalid
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-500 hover:bg-green-600'
+            
+          }`}
+        >
+          {submitting ? 'Creating...' : 'Create Parcel'}
         </button>
       </form>
-
-      <div className="map-placeholder">
-        <p>Map preview (static placeholder)</p>
-      </div>
     </div>
   );
-}
+};
 
 export default CreateParcel;
+
