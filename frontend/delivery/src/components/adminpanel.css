@@ -1,0 +1,179 @@
+/* adminpanel.css */
+
+/* Define theme colors based on the screenshot */
+:root {
+    --primary-blue: #2A75C3; /* Approximate blue from the screenshot header */
+    --light-gray-bg: #f8f9fa; /* Light background for the page */
+    --white: #ffffff;
+    --border-color: #dee2e6; /* Light grey for borders */
+    --text-color: #495057; /* Dark grey for text */
+    --label-color: #6c757d; /* Slightly lighter grey for labels */
+    --shadow-color: rgba(0, 0, 0, 0.08); /* Subtle shadow */
+    --input-focus-border: var(--primary-blue);
+    --input-focus-shadow: rgba(42, 117, 195, 0.25); /* Lighter blue for focus shadow */
+  }
+  
+  /* Basic body styling (optional, assumes a light page background) */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--light-gray-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px; /* Add padding around the panel */
+  }
+  
+  /* Main Admin Panel Container */
+  .admin-panel {
+    background-color: var(--white);
+    padding: 24px; /* Equivalent to p-6 */
+    border-radius: 16px; /* Equivalent to rounded-2xl */
+    box-shadow: 0 4px 12px var(--shadow-color); /* Equivalent to shadow-md, adjusted */
+    max-width: 56rem; /* Equivalent to max-w-4xl */
+    margin: 40px auto; /* Center the panel with some top/bottom margin */
+    box-sizing: border-box;
+  }
+  
+  /* Panel Heading */
+  .admin-panel h2 {
+    font-size: 1.5rem; /* Equivalent to text-2xl */
+    font-weight: 600; /* Equivalent to font-semibold */
+    margin-bottom: 24px; /* Equivalent to mb-6 (adjust if needed) */
+    text-align: center;
+    color: var(--primary-blue); /* Use theme color */
+  }
+  
+  /* List of Parcels */
+  .admin-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Individual Parcel Item (Card) */
+  .admin-panel li {
+    border: 1px solid var(--border-color);
+    padding: 16px; /* Equivalent to p-4 */
+    border-radius: 8px; /* Equivalent to rounded-lg */
+    box-shadow: 0 2px 4px var(--shadow-color); /* Equivalent to shadow-sm, adjusted */
+    margin-bottom: 24px; /* Equivalent to space-y-6 */
+  }
+  
+  .admin-panel li:last-child {
+    margin-bottom: 0; /* Remove margin from the last item */
+  }
+  
+  /* Parcel ID Text */
+  .admin-panel li p {
+    margin: 0 0 12px 0; /* Space below the Parcel ID */
+    font-size: 1rem;
+  }
+  
+  .admin-panel li p strong {
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  /* Form Labels */
+  .admin-panel label {
+    display: block; /* Equivalent to block */
+    margin-top: 8px; /* Equivalent to mt-2 */
+  }
+  /* Add more margin for the second label */
+  .admin-panel li label + label {
+     margin-top: 16px; /* Equivalent to mt-4 */
+  }
+  
+  /* Text inside Labels */
+  .admin-panel label span {
+    display: block; /* Equivalent to block */
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    font-weight: 500; /* Equivalent to font-medium */
+    color: var(--label-color); /* Equivalent to text-gray-700 */
+    margin-bottom: 4px; /* Space between label text and input */
+  }
+  
+  /* Input and Select Styling */
+  .admin-panel input[type="text"],
+  .admin-panel select {
+    margin-top: 4px; /* Equivalent to mt-1 */
+    display: block; /* Equivalent to block */
+    width: 100%; /* Equivalent to w-full */
+    border: 1px solid var(--border-color); /* Equivalent to border border-gray-300 */
+    border-radius: 6px; /* Equivalent to rounded-md */
+    box-shadow: inset 0 1px 2px var(--shadow-color); /* Equivalent to shadow-sm, use inset for inputs */
+    padding: 10px 12px; /* Equivalent to p-2, slightly larger padding */
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: var(--white);
+    color: var(--text-color);
+    box-sizing: border-box; /* Important for width: 100% */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  /* Style select dropdown arrow (basic) */
+  .admin-panel select {
+    appearance: none; /* Remove default arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 8px 10px;
+    padding-right: 2.5rem; /* Make space for the arrow */
+  }
+  
+  /* Focus Styles for Inputs and Selects */
+  .admin-panel input[type="text"]:focus,
+  .admin-panel select:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px var(--input-focus-shadow);
+  }
+  
+  /* --- Responsive Design --- */
+  
+  /* Medium screens (e.g., tablets) */
+  @media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    .admin-panel {
+      max-width: 95%; /* Allow panel to take more width */
+      padding: 20px;
+      margin: 30px auto;
+    }
+  
+    .admin-panel h2 {
+      font-size: 1.3rem;
+    }
+  }
+  
+  /* Small screens (e.g., mobiles) */
+  @media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .admin-panel {
+      padding: 16px;
+      margin: 20px auto;
+      border-radius: 12px; /* Slightly less rounded */
+    }
+  
+    .admin-panel h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+  
+    .admin-panel li {
+      padding: 12px;
+      margin-bottom: 16px; /* Reduce spacing between items */
+    }
+  
+    .admin-panel label span {
+      font-size: 0.8rem; /* Slightly smaller label text */
+    }
+  
+    .admin-panel input[type="text"],
+    .admin-panel select {
+      padding: 8px 10px; /* Adjust padding */
+      font-size: 0.9rem;
+    }
+  }

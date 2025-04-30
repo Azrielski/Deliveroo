@@ -1,33 +1,35 @@
-// AdminPanel.jsx
+// AdminPanel.jsx (after removing Tailwind classes)
 import React from 'react';
+import './adminpanel.css'; // Import the CSS
 
 const AdminPanel = ({ parcels, onUpdateStatus, onUpdateLocation }) => {
   return (
-    <div className="admin-panel p-6 bg-white rounded-2xl shadow-md max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Admin Panel</h2>
-      <ul className="space-y-6">
+    // Keep only the main class for CSS targeting
+    <div className="admin-panel">
+      <h2>Admin Panel</h2> {/* Remove text-2xl etc. */}
+      <ul> {/* Remove space-y-6 */}
         {parcels.map((parcel) => (
-          <li key={parcel.id} className="border p-4 rounded-lg shadow-sm">
+          <li key={parcel.id}> {/* Remove border, p-4 etc. */}
             <p><strong>Parcel ID:</strong> {parcel.id}</p>
-            <label className="block mt-2">
-              <span className="block text-sm font-medium text-gray-700">Status</span>
+            <label> {/* Remove block, mt-2 */}
+              <span>Status</span> {/* Remove block, text-sm etc. */}
               <select
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 value={parcel.status}
                 onChange={(e) => onUpdateStatus(parcel.id, e.target.value)}
+                // Remove Tailwind classes from select
               >
                 <option value="Pending">Pending</option>
                 <option value="In Transit">In Transit</option>
                 <option value="Delivered">Delivered</option>
               </select>
             </label>
-            <label className="block mt-4">
-              <span className="block text-sm font-medium text-gray-700">Current Location</span>
+            <label> {/* Remove block, mt-4 */}
+              <span>Current Location</span> {/* Remove block, text-sm etc. */}
               <input
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                 type="text"
                 value={parcel.currentLocation}
                 onChange={(e) => onUpdateLocation(parcel.id, e.target.value)}
+                // Remove Tailwind classes from input
               />
             </label>
           </li>

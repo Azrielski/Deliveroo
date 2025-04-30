@@ -18,7 +18,8 @@ import AuthFlow from './components/AuthFlow';
 
 function App() {
   // const [user, setUser] = useState(null);
-  const [user, setUser] = useState({ email: 'test@example.com' });
+  // const [user, setUser] = useState({ email: 'test@example.com' })
+  const [user, setUser] = useState({ email: 'admin@example.com' });
   const [parcels, setParcels] = useState([]);
 
   // Authentication handlers
