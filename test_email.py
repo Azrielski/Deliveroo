@@ -1,5 +1,3 @@
-
-
 import smtplib
 
 server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -7,8 +5,4 @@ server.starttls()
 server.login("deliveroo.notification@gmail.com", "vkjz ecxz jvbf wyfw") 
 server.sendmail("deliveroo.notification@gmail.com", "jebichikolin@gmail.com", "Test email from Flask")
 server.quit()
-
-
-curl -X POST http://127.0.0.1:5000/api/auth/password-reset \
--H "Content-Type: application/json" \
--d '{"token": "SbF8IvN3gBPvkSlzMD1jERInW2juqCKxOm5k8eEcEJ0", "password": "NewSecurePass123", "confirm_password": "NewSecurePass123"}'
+print("Email sent successfully!")

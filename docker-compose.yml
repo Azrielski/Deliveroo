@@ -1,25 +1,25 @@
-services:
-  listmonk:
-    image: listmonk/listmonk:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - LISTMONK_db__host=db
-      - LISTMONK_db__user=listmonk
-      - LISTMONK_db__password=listmonk
-      - LISTMONK_db__database=listmonk
-      - LISTMONK_db__ssl_mode=disable
-    depends_on:
-      - db
-    restart: unless-stopped
+# services:
+#   listmonk:
+#     image: listmonk/listmonk:latest
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       - LISTMONK_db__host=db
+#       - LISTMONK_db__user=listmonk
+#       - LISTMONK_db__password=listmonk
+#       - LISTMONK_db__database=listmonk
+#       - LISTMONK_db__ssl_mode=disable
+#     depends_on:
+#       - db
+#     restart: unless-stopped
   
-  db:
-    image: postgres:13
-    environment:
-      - POSTGRES_USER=listmonk
-      - POSTGRES_PASSWORD=listmonk
-      - POSTGRES_DB=listmonk
-    volumes:
-      - ./listmonk-data:/var/lib/postgresql/data
-      - ./listmonk/config.toml:/listmonk/config.toml
-    restart: unless-stopped
+#   db:
+#     image: postgres:13
+#     environment:
+#       - POSTGRES_USER=listmonk
+#       - POSTGRES_PASSWORD=listmonk
+#       - POSTGRES_DB=listmonk
+#     volumes:
+#       - ./listmonk-data:/var/lib/postgresql/data
+#       - ./listmonk/config.toml:/listmonk/config.toml
+#     restart: unless-stopped

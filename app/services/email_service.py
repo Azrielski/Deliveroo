@@ -1,32 +1,11 @@
-from flask import current_app, render_template_string, request
-from flask_mail import Mail, Message
-from flask import url_for
-# Initialize Flask-Mail
-mail = Mail()
+# app/services/email_service.py
+from flask import current_app, render_template_string
+from flask_mail import Message
+from app import mail
 
-def send_email(to_email, subject, html_content):
-    """Send email using Flask-Mail (SMTP)"""
-    try:
-        msg = Message(
-            subject=subject,
-            recipients=[to_email],
-            html=html_content,
-            sender=current_app.config.get('MAIL_DEFAULT_SENDER')
-        )
-        mail.send(msg)
-        current_app.logger.info(f"Email sent to {to_email}")
-        return True
-    except Exception as e:
-        current_app.logger.error(f"Error sending email via SMTP: {str(e)}")
-        return False
-
-
-
-def send_verification_email(to_email, token):
-    """Send email verification link"""
+def send_verification_email(email, token):
     subject = "Verify Your Deliveroo Account"
-    # Generate the correct URL for the verification route
-    verification_url = url_for('auth.verify_email', token=token, _external=True)
+    verification_url = f"{current_app.config['FRONTEND_URL']}/verify-email?token={token}"
     html_content = render_template_string("""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Welcome to Deliveroo!</h2>
@@ -38,13 +17,24 @@ def send_verification_email(to_email, token):
         <p>Best regards,<br>The Deliveroo Team</p>
     </div>
     """, verification_url=verification_url)
-    return send_email(to_email, subject, html_content)
 
+    try:
+        msg = Message(
+            subject=subject,
+            recipients=[email],
+            html=html_content,
+            sender=current_app.config['MAIL_DEFAULT_SENDER']
+        )
+        mail.send(msg)
+        current_app.logger.info(f"Verification email sent to {email}")
+        return True
+    except Exception as e:
+        current_app.logger.error(f"Error sending verification email: {str(e)}")
+        return False
 
-def send_password_reset_email(to_email, token):
-    """Send password reset link"""
+def send_password_reset_email(email, token):
     subject = "Reset Your Deliveroo Password"
-    reset_url = f"{request.host_url.rstrip('/')}/reset-password?token={token}"
+    reset_url = f"{current_app.config['FRONTEND_URL']}/reset-password?token={token}"
     html_content = render_template_string("""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Password Reset Request</h2>
@@ -57,6 +47,17 @@ def send_password_reset_email(to_email, token):
         <p>Best regards,<br>The Deliveroo Team</p>
     </div>
     """, reset_url=reset_url)
-    return send_email(to_email, subject, html_content)
 
-
+    try:
+        msg = Message(
+            subject=subject,
+            recipients=[email],
+            html=html_content,
+            sender=current_app.config['MAIL_DEFAULT_SENDER']
+        )
+        mail.send(msg)
+        current_app.logger.info(f"Password reset email sent to {email}")
+        return True
+    except Exception as e:
+        current_app.logger.error(f"Error sending password reset email: {str(e)}")
+        return False

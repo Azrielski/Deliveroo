@@ -20,13 +20,14 @@ class User(db.Model, BaseModel, SerializerMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
-    verification_token = db.Column(db.String(255), nullable=True)
-    token_expiry = db.Column(db.DateTime, nullable=True)
+    verification_token = db.Column(db.String(255), nullable=True)  # Email verification
+    reset_token = db.Column(db.String(255), nullable=True, unique=True)  # ✅ New column for password reset
+    token_expiry = db.Column(db.DateTime, nullable=True)  # Expiration for both verification & reset tokens
     is_active = db.Column(db.Boolean, default=False)
-
 
     parcels = db.relationship('Parcel', back_populates='user', lazy=True)
     ratings = db.relationship('Rating', back_populates='user', lazy=True)
+
 
     serialize_rules = ('-parcels.user', '-ratings.user')
     def check_password(self, password):
@@ -93,15 +94,20 @@ class Rating(db.Model, BaseModel, SerializerMixin):
 
 
 
-
-app.py
 from app import create_app, mail  # Import the app factory and mail instance
 from flask import request, current_app, render_template_string
 from flask_mail import Message
 
+from flask_cors import CORS
+
+
+
+ # Allow requests from all origins
+
+
 # Create the Flask app using the factory pattern
 app = create_app()
-
+CORS(app, supports_credentials=True)
 @app.route('/')
 def index():
     return {"message": "Welcome to my website!"}
