@@ -59,6 +59,10 @@ class Parcel(db.Model, BaseModel, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='parcels', lazy=True)
+    
+    driver_id = db.Column(db.Integer, db.ForeignKey('drivers.id'), nullable=True)
+    driver = db.relationship('Driver', back_populates='assigned_parcels', lazy=True)
+
 
     tracking_updates = db.relationship('TrackingUpdate', back_populates='parcel', lazy=True)
     ratings = db.relationship('Rating', back_populates='parcel', lazy=True)
@@ -67,7 +71,9 @@ class Parcel(db.Model, BaseModel, SerializerMixin):
         '-user.parcels',
         '-ratings.parcel',
         '-tracking_updates.parcel',
+        '-driver.assigned_parcels',
     )
+
 
     def __repr__(self):
         return f"<Parcel {self.description}, Status: {self.status}>"
@@ -103,3 +109,23 @@ class Rating(db.Model, BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f"<Rating {self.stars}★ by User {self.user_id}>"
+    
+
+class Driver(db.Mode, BaseModel, SerializerMixin):
+    __tablename__ = 'drivers'
+    
+    first_name = db.Column(db.String(80), nullable = False)
+    last_name = db.Column(db.String(80), nullable = False)
+    
+    unique_name = db.Column(db.String(160), unique=True, nullable=False)
+    
+    is_active  = db.Column(db.Boolean, default = True)
+    
+    assigned_parcels = db.relationship('Parcels', back_populates = 'driver', lazy=True)
+    
+    serialize_rules = ('-assigned_parcels.driver',)
+    
+    def __repr__(self):
+        return f"<Driver {self.unique_name}, Available: {self.is_available}>"
+
+    
