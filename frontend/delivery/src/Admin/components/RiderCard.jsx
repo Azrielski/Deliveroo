@@ -12,7 +12,7 @@ const RiderCard = ({ name, riderId, status, ordersCount = 0 }) => {
           <Bike className={`rider-card-icon ${isAvailable ? "icon-green" : "icon-red"}`} />
         </div>
         <div className="rider-card-info">
-          <h3 className="rider-card-name">{name}</h3>
+          <h3>{name}</h3>
           <p className="rider-card-id">{riderId}</p>
         </div>
       </div>
@@ -22,7 +22,7 @@ const RiderCard = ({ name, riderId, status, ordersCount = 0 }) => {
           {isAvailable ? "Available" : `Delivering ${ordersCount} ${ordersCount === 1 ? "order" : "orders"}`}
         </span>
         
-        <button className="rider-card-button">
+        <button className={`rider-card-button ${!isAvailable ? "view-orders-button" : ""}`}>
           {isAvailable ? "Assign Order" : "View Orders"}
         </button>
       </div>

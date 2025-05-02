@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import RiderCard from "../components/RiderCard";
 import RidersTable from "../components/RidersTable";
+import AddRiderModal from "../components/AddRiderModal";
 import "./Riders.css";
 
 const Riders = () => {
-  // Mock data for riders
-  const availableRiders = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Riders Mock data
+  const [availableRiders, setAvailableRiders] = useState([
     {
       name: "Alex Johnson",
       riderId: "Rider #12",
@@ -16,9 +19,9 @@ const Riders = () => {
       riderId: "Rider #5",
       status: "available",
     },
-  ];
+  ]);
   
-  const busyRiders = [
+  const [busyRiders, setBusyRiders] = useState([
     {
       name: "David Wilson",
       riderId: "Rider #8",
@@ -31,9 +34,9 @@ const Riders = () => {
       status: "delivering",
       ordersCount: 1,
     },
-  ];
+  ]);
   
-  const allRiders = [
+  const [allRiders, setAllRiders] = useState([
     {
       id: "#RDR-012",
       name: "Alex Johnson",
@@ -66,14 +69,59 @@ const Riders = () => {
       status: "busy",
       assignedOrders: 1,
     },
-  ];
+  ]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddRider = (riderData) => {
+    // Generate a new rider ID
+    const newRiderId = `#RDR-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+    
+    // Format the name
+    const fullName = `${riderData.firstName} ${riderData.lastName}`;
+    
+    // Format the vehicle info
+    const vehicle = riderData.licensePlate 
+      ? `${riderData.vehicleType} (${riderData.licensePlate})`
+      : riderData.vehicleType;
+    
+    // Create new rider object for the table
+    const newRider = {
+      id: newRiderId,
+      name: fullName,
+      vehicle: vehicle,
+      phone: riderData.phone,
+      status: "available",
+      assignedOrders: 0,
+    };
+    
+    // Create new rider object for the card display
+    const newRiderCard = {
+      name: fullName,
+      riderId: `Rider ${newRiderId.replace('#RDR-', '#')}`,
+      status: "available",
+    };
+    
+    // Update state
+    setAllRiders([...allRiders, newRider]);
+    setAvailableRiders([...availableRiders, newRiderCard]);
+    
+    // Close modal
+    closeModal();
+  };
 
   return (
     <div className="riders-page">
       <div className="riders-header">
         <h1 className="riders-title">Riders Management</h1>
         
-        <button className="add-rider-button">
+        <button className="add-rider-button" onClick={openModal}>
           + Add Rider
         </button>
       </div>
@@ -107,10 +155,17 @@ const Riders = () => {
         </div>
       </div>
       
-      <div className="riders-table-container">
+      <div className="riders-table-section">
         <h2 className="section-title">All Riders</h2>
         <RidersTable riders={allRiders} />
       </div>
+      
+      {/* Add Rider Modal */}
+      <AddRiderModal 
+        isOpen={isModalOpen} 
+        onClose={closeModal}
+        onSubmit={handleAddRider}
+      />
     </div>
   );
 };

@@ -7,8 +7,10 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <Bike className="sidebar-logo" />
-        <h1 className="sidebar-title">Deliveroo Admin</h1>
+        <div className="logo-container">
+          <Bike className="sidebar-logo" />
+          <h1 className="sidebar-title">Deliveroo Admin</h1>
+        </div>
       </div>
       
       <nav className="sidebar-nav">

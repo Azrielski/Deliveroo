@@ -40,7 +40,7 @@ function AuthForm() {
     } else {
       setErrors({});
       if (isLogin) {
-        alert(`Login with email: ${email}`);
+        navigate("/admin/dashboard", { replace: true });
       } else {
         alert(`Signup for ${firstName} ${lastName} with email: ${email}`);
       }

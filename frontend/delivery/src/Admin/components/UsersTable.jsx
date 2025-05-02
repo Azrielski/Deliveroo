@@ -1,13 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Eye, ExternalLink } from "lucide-react";
 import "./UsersTable.css";
 
 const UsersTable = ({ users }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const trimmedSearchTerm = searchTerm.trim().toLowerCase();
+  
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(trimmedSearchTerm) ||
+    user.email.toLowerCase().includes(trimmedSearchTerm) ||
+    user.id.toLowerCase().includes(trimmedSearchTerm)
+  );
+
   return (
     <div className="users-table-container">
       <div className="users-table-actions">
         <div className="users-search">
-          <input type="text" placeholder="Search users..." className="search-input" />
+          <input
+            type="text"
+            placeholder="Search users..."
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
         <button className="export-button">
           Export
@@ -30,26 +46,32 @@ const UsersTable = ({ users }) => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td className="user-id">{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.phone}</td>
-              <td>{user.orders}</td>
-              <td>{user.joined}</td>
-              <td>
-                <div className="table-actions">
-                  <button className="action-button">
-                    <Eye className="action-icon" />
-                  </button>
-                  <button className="action-button">
-                    <ExternalLink className="action-icon" />
-                  </button>
-                </div>
-              </td>
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <tr key={user.id}>
+                <td className="user-id">{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.orders}</td>
+                <td>{user.joined}</td>
+                <td>
+                  <div className="table-actions">
+                    <button className="action-button">
+                      <Eye className="action-icon" />
+                    </button>
+                    <button className="action-button">
+                      <ExternalLink className="action-icon" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7">No users found</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 

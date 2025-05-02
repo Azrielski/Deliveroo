@@ -1,13 +1,16 @@
 .rider-card {
-    padding: 20px;
+    padding: 16px;
     border-radius: 8px;
     background-color: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border-left-width: 4px;
+    border-left: 4px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
   
   .rider-available {
-    border-left-color: #22c55e;
+    border-left-color: #10b981;
   }
   
   .rider-busy {
@@ -17,16 +20,20 @@
   .rider-card-content {
     display: flex;
     align-items: center;
+    gap: 12px;
   }
   
   .rider-card-icon-container {
-    padding: 12px;
-    border-radius: 100%;
-    margin-right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   }
   
   .icon-available {
-    background-color: #dcfce7;
+    background-color: #d1fae5;
   }
   
   .icon-busy {
@@ -34,12 +41,12 @@
   }
   
   .rider-card-icon {
-    height: 20px;
     width: 20px;
+    height: 20px;
   }
   
   .icon-green {
-    color: #22c55e;
+    color: #10b981;
   }
   
   .icon-red {
@@ -47,48 +54,64 @@
   }
   
   .rider-card-info h3 {
+    font-size: 16px;
     font-weight: 600;
     margin: 0;
+    color: #111827;
   }
   
   .rider-card-id {
-    font-size: 0.75rem;
+    font-size: 14px;
     color: #6b7280;
-    margin: 0;
+    margin: 4px 0 0 0;
   }
   
   .rider-card-footer {
-    margin-top: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   
   .rider-card-status {
-    font-size: 0.875rem;
+    font-size: 14px;
     font-weight: 500;
-  }
-  
-  .status-available {
-    color: #22c55e;
-  }
-  
-  .status-busy {
-    color: #ef4444;
-  }
-  
-  .rider-card-button {
-    background: none;
-    border: none;
-    color: #2563eb;
-    font-size: 0.875rem;
-    cursor: pointer;
     padding: 4px 8px;
     border-radius: 4px;
   }
   
+  .status-available {
+    background-color: #d1fae5;
+    color: #10b981;
+  }
+  
+  .status-busy {
+    background-color: #fee2e2;
+    color: #ef4444;
+  }
+  
+  .rider-card-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: #3b82f6;
+    color: white;
+  }
+  
   .rider-card-button:hover {
-    background-color: #eff6ff;
-    color: #1d4ed8;
+    background-color: #2563eb;
+  }
+  
+  .view-orders-button {
+    background-color: transparent;
+    color: #3b82f6;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .view-orders-button:hover {
+    background-color: #f9fafb;
+    color: #2563eb;
   }
   

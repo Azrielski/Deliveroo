@@ -3,7 +3,7 @@ import UsersTable from "../components/UsersTable";
 import "./Users.css";
 
 const Users = () => {
-  // Mock data for users
+  // Users Mock data
   const users = [
     {
       id: "#USR-001",

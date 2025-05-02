@@ -1,46 +1,55 @@
 .riders-table-container {
     width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
   .riders-table {
     width: 100%;
     border-collapse: collapse;
+    background-color: white;
   }
   
   .riders-table th {
-    height: 48px;
-    padding: 0 16px;
     text-align: left;
-    font-weight: 500;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 12px;
     color: #6b7280;
+    background-color: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
+    text-transform: uppercase;
   }
   
   .riders-table td {
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #111827;
   }
   
   .rider-id {
     font-weight: 500;
-    color: #2563eb;
+    color: #3b82f6;
   }
   
   .status-badge {
     display: inline-block;
     padding: 4px 8px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
+    border-radius: 4px;
+    font-size: 12px;
     font-weight: 500;
-    color: white;
   }
   
   .status-green {
-    background-color: #22c55e;
+    background-color: #d1fae5;
+    color: #10b981;
   }
   
   .status-orange {
-    background-color: #f97316;
+    background-color: #fee2e2;
+    color: #ef4444;
   }
   
   .table-actions {
@@ -53,15 +62,15 @@
     align-items: center;
     justify-content: center;
     background: none;
-    border: none;
+    border: 1px solid #e5e7eb;
     cursor: pointer;
-    padding: 4px;
+    padding: 6px;
     border-radius: 4px;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
   }
   
   .action-button:hover {
-    background-color: #f3f4f6;
+    background-color: #f9fafb;
   }
   
   .delete-action {
@@ -69,11 +78,10 @@
   }
   
   .delete-action:hover {
-    color: #dc2626;
+    border-color: #ef4444;
   }
   
   .action-icon {
     width: 16px;
     height: 16px;
   }
-  

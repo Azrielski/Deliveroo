@@ -8,13 +8,13 @@ const RidersTable = ({ riders }) => {
       <table className="riders-table">
         <thead>
           <tr>
-            <th>RIDER ID</th>
-            <th>NAME</th>
-            <th>VEHICLE</th>
-            <th>PHONE</th>
-            <th>STATUS</th>
-            <th>ASSIGNED ORDERS</th>
-            <th>ACTIONS</th>
+            <th>Rider ID</th>
+            <th>Name</th>
+            <th>Vehicle</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Assigned Orders</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
