@@ -5,7 +5,7 @@ import { ShoppingCart, Users, Bike } from "lucide-react";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  // Mock data for the dashboard
+  // Mock data
   const recentOrders = [
     { 
       id: "#ORD-2023-156", 

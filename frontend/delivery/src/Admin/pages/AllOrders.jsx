@@ -5,7 +5,7 @@ import "./AllOrders.css";
 const AllOrders = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   
-  // Mock data for the orders
+  // Orders Mock Data
   const orders = [
     { 
       id: "#ORD-2023-156", 

@@ -54,8 +54,8 @@ const Sidebar = () => {
       </nav>
       
       <div className="sidebar-footer">
-        <button className="sidebar-item">
-          <LogOut className="sidebar-icon" />
+        <button className="logout-btn">
+          <LogOut className="logout-icon" />
           <span>Logout</span>
         </button>
       </div>
