@@ -1,0 +1,66 @@
+.orders-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orders-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.orders-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-filter {
+  width: 192px;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background-color: white;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.export-button:hover {
+  background-color: #1d4ed8;
+}
+
+.export-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.orders-content {
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,112 @@
+.orders-table-container {
+    width: 100%;
+  }
+  
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .orders-table th {
+    height: 48px;
+    padding: 0 16px;
+    text-align: left;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .orders-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .order-id {
+    font-weight: 500;
+    color: #2563eb;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .status-delivered {
+    background-color: #22c55e;
+  }
+  
+  .status-pending {
+    background-color: #eab308;
+  }
+  
+  .status-transit {
+    background-color: #3b82f6;
+  }
+  
+  .table-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .action-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  
+  .pagination-info {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .pagination-button {
+    padding: 4px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .pagination-button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .pagination-button.active {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+  }
+  

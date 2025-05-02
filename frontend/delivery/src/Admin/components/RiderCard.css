@@ -1,0 +1,94 @@
+.rider-card {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left-width: 4px;
+  }
+  
+  .rider-available {
+    border-left-color: #22c55e;
+  }
+  
+  .rider-busy {
+    border-left-color: #ef4444;
+  }
+  
+  .rider-card-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .rider-card-icon-container {
+    padding: 12px;
+    border-radius: 100%;
+    margin-right: 16px;
+  }
+  
+  .icon-available {
+    background-color: #dcfce7;
+  }
+  
+  .icon-busy {
+    background-color: #fee2e2;
+  }
+  
+  .rider-card-icon {
+    height: 20px;
+    width: 20px;
+  }
+  
+  .icon-green {
+    color: #22c55e;
+  }
+  
+  .icon-red {
+    color: #ef4444;
+  }
+  
+  .rider-card-info h3 {
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .rider-card-id {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .rider-card-footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .rider-card-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .status-available {
+    color: #22c55e;
+  }
+  
+  .status-busy {
+    color: #ef4444;
+  }
+  
+  .rider-card-button {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .rider-card-button:hover {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+  }
+  

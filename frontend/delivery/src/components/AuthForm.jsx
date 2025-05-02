@@ -241,6 +241,7 @@ function AuthForm() {
               </div>
             </form>
           </div>
+          {/* Socials Authentication */}
           {/* <div className="social-login">
             <div className="divider">
               <div className="line"></div>
