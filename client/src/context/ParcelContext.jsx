@@ -16,6 +16,7 @@ export function ParcelProvider({children}){
       setParcels(data);
     } catch (error) {
       setError(error.message);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -31,19 +32,41 @@ export function ParcelProvider({children}){
         },
         body: JSON.stringify(parcelData),
       });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create parcel');
-      }
-      
       await fetchParcels();
       return await response.json();
     } catch (error) {
-      setError(error.message);
-      throw error; 
+      console.error('Error creating parcel:', error);
     }
   };
-  
+
+  const updateParcel = async (id, updates) => {
+    try {
+      await fetch(`http://localhost:5000/parcels/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      await fetchParcels();
+    } catch (error) {
+      console.error('Error updating parcel:', error);
+    }
+  };
+
+
+
+  const cancelParcel = async (id) => {
+    try {
+      await fetch(`http://localhost:5000/parcels/${id}`, {
+        method: 'DELETE',
+      });
+      await fetchParcels();
+    } catch (error) {
+      console.error('Error cancelling parcel:', error);
+    }
+  };
+
   useEffect(() => {
     fetchParcels();
   }, [fetchParcels]);
@@ -54,7 +77,9 @@ export function ParcelProvider({children}){
         parcels,
         loading,
         error,
-        createParcel
+        createParcel,
+        updateParcel,
+        cancelParcel,
       }}
     >
       {children}
