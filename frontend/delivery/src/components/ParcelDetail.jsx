@@ -1,21 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import ParcelContext from '../context/ParcelContext';
-import RouteMap from './RouteMap';
 import { FiAlertTriangle, FiLoader } from 'react-icons/fi';
-
 
 function ParcelDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { parcels, updateParcel} = useContext(ParcelContext);
+  const { parcels, updateParcel } = useContext(ParcelContext);
   const [parcel, setParcel] = useState(null);
   const [newDestination, setNewDestination] = useState('');
   const [routeData, setRouteData] = useState(null);
   const [routeError, setRouteError] = useState(null);
-  const [enableSimulation, setEnableSimulation] = useState(false);
 
-  
   const geocodeAddress = async (address) => {
     try {
       const response = await fetch(
@@ -28,7 +24,7 @@ function ParcelDetail() {
       console.error('Geocoding error:', error);
       return null;
     }
-  }; 
+  };
 
   useEffect(() => {
     const fetchRoute = async () => {
@@ -61,7 +57,6 @@ function ParcelDetail() {
     fetchRoute();
   }, [parcel]);
 
-
   useEffect(() => {
     const existing = parcels.find(p => p.id === parseInt(id));
     if (existing) {
@@ -80,15 +75,12 @@ function ParcelDetail() {
     }
   }, [id, parcels]);
 
-  
   const handleUpdate = async () => {
     if (!newDestination.trim()) return;
     try {
-      
       const newCoords = await geocodeAddress(newDestination);
       if (!newCoords) throw new Error('Could not geocode new destination');
   
-      // Send both address and coordinates to backend
       await updateParcel(id, { 
         destination_address: newDestination,
         destination_lat: newCoords[0],
@@ -103,11 +95,7 @@ function ParcelDetail() {
   
   const formatDuration = (seconds) => {
     const totalMinutes = Math.round(seconds / 60);
-    
-    if (totalMinutes < 60) {
-      return `${totalMinutes} minutes`;
-    }
-    
+    if (totalMinutes < 60) return `${totalMinutes} minutes`;
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
     return `${hours}h ${minutes}m`;
@@ -120,10 +108,9 @@ function ParcelDetail() {
     </div>
   );
 
-  
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg mt-8">
-       <button
+      <button
         onClick={() => navigate(-1)}
         className="mb-6 text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
       >
@@ -171,7 +158,6 @@ function ParcelDetail() {
         </div>
       </div>
   
-      {/* Update Section */}
       {parcel.status === 'pending' && (
         <div className="mt-8 border-t pt-6">
           <h3 className="text-lg font-medium text-blue-600 mb-4">Update Destination</h3>
@@ -195,67 +181,55 @@ function ParcelDetail() {
       )}
             
       {parcel.status !== 'cancelled' && (
-      <div className="mt-8 space-y-6">
-        {routeError && (
-          <div className="mb-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg flex items-center gap-2">
-            <FiAlertTriangle className="inline-block" />
-              {routeError}
-          </div>
-        )}
-
-        {!routeData && !routeError && (
-          <div className="text-center p-4 text-gray-500">
-            <FiLoader className="inline-block animate-spin mr-2" />
-              Calculating route...
-          </div>
-            )}
-
-        {routeData && (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg shadow-sm">
-              <h4 className="text-sm font-medium text-blue-600">Distance</h4>
-              <p className="text-2xl font-bold text-gray-800">
-                {(routeData.distance / 1000).toFixed(1)} km
-              </p>
+        <div className="mt-8 space-y-6">
+          {routeError && (
+            <div className="mb-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg flex items-center gap-2">
+              <FiAlertTriangle className="inline-block" />
+                {routeError}
             </div>
-            <div className="p-4 bg-blue-50 rounded-lg shadow-sm">
-              <h4 className="text-sm font-medium text-blue-600">Estimated Duration</h4>
-              <p className="text-2xl font-bold text-gray-800">
-              {formatDuration(routeData.duration)}
-              </p>
+          )}
+
+          {!routeData && !routeError && (
+            <div className="text-center p-4 text-gray-500">
+              <FiLoader className="inline-block animate-spin mr-2" />
+                Calculating route...
             </div>
-          </div>
-        )}
-        {routeData && (
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-bold text-blue-600">Delivery Route</h3>
-            <button
-              onClick={() => setEnableSimulation(!enableSimulation)}
-              className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg text-sm"
-            >
-            {enableSimulation ? 'Stop Simulation' : 'Start Simulation'}
-            </button>
-          </div>
-        )}
-        <div className="relative">
-          <RouteMap 
-            key={`${parcel.status}-${parcel.destination_lat}-${parcel.destination_lon}-${enableSimulation}`}
-            route={enableSimulation ? routeData?.coordinates : null}
-            pickup={parcel?.pickup_lat && [parcel.pickup_lat, parcel.pickup_lon]}
-            destination={parcel?.destination_lat && [parcel.destination_lat, parcel.destination_lon]}
-            pickupAddress={parcel?.pickup_address}
-            destinationAddress={parcel?.destination_address}
-          />
+          )}
+
+          {routeData && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-blue-50 rounded-lg shadow-sm">
+                <h4 className="text-sm font-medium text-blue-600">Distance</h4>
+                <p className="text-2xl font-bold text-gray-800">
+                  {(routeData.distance / 1000).toFixed(1)} km
+                </p>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-lg shadow-sm">
+                <h4 className="text-sm font-medium text-blue-600">Estimated Duration</h4>
+                <p className="text-2xl font-bold text-gray-800">
+                {formatDuration(routeData.duration)}
+                </p>
+              </div>
+            </div>
+          )}
+          
+          {routeData && (
+            <div className="flex justify-between items-center mb-4">
+              <Link
+                to={`/parcels/${parcel.id}/simulation`}
+                className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg text-sm"
+              >
+                View Live Delivery  →
+              </Link>
+            </div>
+          )}
         </div>
-      </div>
       )}
     </div>
   );
 }
 
 export default ParcelDetail;
-
-
 
 
   

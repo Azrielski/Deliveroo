@@ -4,6 +4,7 @@ import Navbar from './components/NavBar';
 import ParcelList from './components/ParcelList';
 import ParcelDetail from './components/ParcelDetail';
 import CreateParcel from './components/CreateParcel';
+import DeliverySimulation from './components/DeliverySimulation';
 import 'leaflet/dist/leaflet.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
               <Route path="/" element={<ParcelList />} />
               <Route path="/create" element={<CreateParcel />} />
               <Route path="/parcels/:id" element={<ParcelDetail />} />
+              <Route path="/parcels/:id/simulation" element={<DeliverySimulation />} />
             </Routes>
           </div>
         </div>

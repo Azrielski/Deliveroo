@@ -55,11 +55,14 @@ export function ParcelProvider({children}){
   };
 
 
-
   const cancelParcel = async (id) => {
     try {
       await fetch(`http://localhost:5000/parcels/${id}`, {
-        method: 'DELETE',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'cancelled' }),
       });
       await fetchParcels();
     } catch (error) {
