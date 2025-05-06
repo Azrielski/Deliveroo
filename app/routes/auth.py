@@ -94,18 +94,25 @@ def verify_email():
     if request.method == "OPTIONS":
         return jsonify({"message": "CORS preflight success"}), 200
 
-    if request.method == "POST":
-        data = request.get_json()
-        token = data.get("token")  # Extract from JSON body
-    else:
-        token = request.args.get("token")  # Extract from URL for GET requests
+    # Debugging: Log received request data
+    data = request.get_json()
+    print("Received Data:", data)  # ✅ Debug incoming request
 
-    if not token:
-        return jsonify({"message": "Missing verification token"}), 400
+    # Extract token properly
+    token = None
+    if request.method == "POST":
+        token = data.get("token")
+    else:
+        token = request.args.get("token")
+
+    if not token or not isinstance(token, str):
+        return jsonify({"message": "Missing or invalid verification token"}), 400
 
     try:
         user = User.query.filter_by(verification_token=token).first()
+        
         if not user:
+            print(f"Invalid token received: {token}")  # ✅ Debug invalid tokens
             return jsonify({"message": "Invalid token"}), 400
 
         user.is_active = True
@@ -117,9 +124,9 @@ def verify_email():
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Error during email verification: {e}")
+        print(f"Exception Traceback: {e}")  # ✅ Debug full error traceback
         return jsonify({'message': 'An error occurred during email verification'}), 500
 
-# Login route
 @auth_bp.route('/login', methods=['POST'])
 @validate_json(UserLoginSchema)
 def login(validated_data):
@@ -136,15 +143,23 @@ def login(validated_data):
         # Generate JWT token
         token = generate_token(user.id)
 
-        return jsonify({
+        response_data = {
             'message': 'Login successful',
             'token': token,
             'user': UserBaseSchema().dump(user)
-        }), 200
+        }
+
+        # ✅ Check if user is admin and redirect accordingly
+        if user.is_admin:
+            response_data["redirect"] = "/admin-dashboard"
+        else:
+            response_data["redirect"] = "/dashboard"
+
+        return jsonify(response_data), 200
+
     except Exception as e:
         current_app.logger.error(f"Error during login: {e}")
         return jsonify({'message': 'An error occurred during login'}), 500
-
 
 
 
