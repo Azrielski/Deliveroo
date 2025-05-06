@@ -66,10 +66,20 @@ class UserParcels(Resource):
         data = request.get_json()
         new_parcel = Parcel(
             origin=data['origin'],
-            destination=data['destination'],
             user_id=user.id,
             payment_status='pending',  # initially set to pending
-            delivery_status='pending',  # initially set to pending
+            status='pending',
+            weight=data ['weight'] ,
+                      
+            description=data.get('description'),  
+            pickup_address=data['pickup_address'],
+            destination_address=data['destination_address'],
+    
+            present_location=data['pickup_address'],
+            pickup_lat=data.get('pickup_lat'),
+            pickup_lon=data.get('pickup_lon'),
+            destination_lat=data.get('destination_lat'),
+            destination_lon=data.get('destination_lon') # initially set to pending
         )
         # Assigning a driver automatically when the parcel is created
         new_parcel.driver_id = assign_driver_automatically()
@@ -84,19 +94,36 @@ class ParcelDetail(Resource):
         parcel = Parcel.query.get(parcel_id)
         if not parcel:
             return {'message': 'Parcel not found'}, 404
-        return parcel.to_dict(), 200
+        return  {
+            'description':parcel.description,
+            'pickup_address': parcel.pickup_address,
+            'destination_address': parcel.destination_address,
+            'present_location': parcel.present_location,
+            'status': parcel.status,
+            'pickup_lat': parcel.pickup_lat,
+            'pickup_lon': parcel.pickup_lon,
+            'destination_lat': parcel.destination_lat,
+            'destination_lon': parcel.destination_lon
+        },200
 
     @jwt_required()
     def put(self, parcel_id):
         parcel = Parcel.query.get(parcel_id)
         if not parcel:
+
             return {'message': 'Parcel not found'}, 404
+            if parcel.status in ('delivered', 'cancelled'):
+               abort(400, message="Cannot modify delivered/cancelled parcel")
 
         data = request.get_json()
         if 'destination' in data:
             parcel.destination = data['destination']
         db.session.commit()
         return parcel.to_dict(), 200
+       
+
+
+   
 
     @jwt_required()
     def delete(self, parcel_id):
