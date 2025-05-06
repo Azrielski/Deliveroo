@@ -3,10 +3,10 @@ import './services.css'; // Import the CSS file
 import deliveryIllustration from '../assets/undraw_deliveries_2m9t.png'; // Adjust the path as needed
 
 // Functional component for the Services section
-function Services() {
+function Services({id}) {
   return (
     // Main container for the services section
-    <div className="services-container">
+    <div className="services-container" id={id}>
       {/* Left column for the image */}
       <div className="image-column">
         {/* Placeholder image - replace with your actual image path or component */}

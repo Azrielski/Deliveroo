@@ -1,9 +1,9 @@
 import React from 'react';
 import './Contact.css';
 
-const Contact = () => {
+const Contact = ({id}) => {
   return (
-    <div className="contact-container">
+    <div className="contact-container" id={id}>
       <h1>Contact Us</h1>
       
       <form className="contact-form">

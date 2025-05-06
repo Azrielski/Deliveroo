@@ -23,8 +23,8 @@ function App() {
           <>
             <Navbar />
             <Hero />
-            <Services />
-            <Contact />
+            <Services id="services"/>
+            <Contact id="contact"/>
             <Footer />
           </>
         } />

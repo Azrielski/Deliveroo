@@ -14,6 +14,24 @@ function Navbar(){
         e.preventDefault();
         navigate('/auth');
     };
+
+    const handleAboutUsClick = (e) => {
+        e.preventDefault();
+        const servicesSection = document.getElementById('services');
+        if (servicesSection) {
+            servicesSection.scrollIntoView({ behavior: 'smooth' });
+            setIsOpen(false); // Close the mobile menu after clicking
+        }
+    };
+
+    const handleContactUsClick = (e) => {
+        e.preventDefault();
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+            setIsOpen(false); // Close the mobile menu after clicking
+        }
+    };
     
     return(
         <nav className="navbar">
@@ -24,8 +42,8 @@ function Navbar(){
                 <div className="bar"></div>
             </div>
             <ul className={`nav-links ${isOpen ? 'open' : ''}`}>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#contact">Contact Us</a></li>
+                <li><a href="#about" onClick={handleAboutUsClick}>About Us</a></li>
+                <li><a href="#contact" onClick={handleContactUsClick}>Contact Us</a></li>
                 <li><a href="#" onClick={handleLoginClick} id='btn' className="login-btn">Login</a></li>
             </ul>
         </nav>
