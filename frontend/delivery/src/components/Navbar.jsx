@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar(){
@@ -32,10 +32,17 @@ function Navbar(){
             setIsOpen(false); // Close the mobile menu after clicking
         }
     };
+
+    const handleLogoClick=(e)=>{
+        e.preventDefault();
+        console.log("Logo clicked - navigating to /");
+        navigate('/')
+        window.scrollTo(0, 0);
+    }
     
     return(
         <nav className="navbar">
-            <div className="logo">Deliveroo</div>
+            <div className="logo" onClick={handleLogoClick}>Deliveroo</div>
             <div className="hamburger" onClick={toggleMenu}>
                 <div className="bar"></div>
                 <div className="bar"></div>
