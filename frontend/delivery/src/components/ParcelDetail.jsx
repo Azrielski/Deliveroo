@@ -13,6 +13,7 @@ function ParcelDetail() {
   const [newDestination, setNewDestination] = useState('');
   const [routeData, setRouteData] = useState(null);
   const [routeError, setRouteError] = useState(null);
+  const [enableSimulation, setEnableSimulation] = useState(false);
 
   
   const geocodeAddress = async (address) => {
@@ -195,8 +196,6 @@ function ParcelDetail() {
             
       {parcel.status !== 'cancelled' && (
       <div className="mt-8 space-y-6">
-        <h3 className="text-2xl font-bold text-blue-600 mb-4">Delivery Route</h3>
-        
         {routeError && (
           <div className="mb-4 p-3 bg-yellow-50 text-yellow-700 rounded-lg flex items-center gap-2">
             <FiAlertTriangle className="inline-block" />
@@ -227,13 +226,24 @@ function ParcelDetail() {
             </div>
           </div>
         )}
+        {routeData && (
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-2xl font-bold text-blue-600">Delivery Route</h3>
+            <button
+              onClick={() => setEnableSimulation(!enableSimulation)}
+              className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg text-sm"
+            >
+            {enableSimulation ? 'Stop Simulation' : 'Start Simulation'}
+            </button>
+          </div>
+        )}
         <div className="relative">
           <RouteMap 
-            key={`${parcel.destination_lat}-${parcel.destination_lon}`} 
+            key={`${parcel.status}-${parcel.destination_lat}-${parcel.destination_lon}-${enableSimulation}`}
+            route={enableSimulation ? routeData?.coordinates : null}
             pickup={parcel?.pickup_lat && [parcel.pickup_lat, parcel.pickup_lon]}
             destination={parcel?.destination_lat && [parcel.destination_lat, parcel.destination_lon]}
-            route={routeData?.coordinates}
-            pickupAddress={parcel?.pickup_address}         
+            pickupAddress={parcel?.pickup_address}
             destinationAddress={parcel?.destination_address}
           />
         </div>
