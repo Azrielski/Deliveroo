@@ -82,6 +82,7 @@ class PasswordResetRequestSchema(Schema):
 
 # Schema for Password Reset
 class PasswordResetSchema(Schema):
+    token = fields.Str(required=True)
     password = fields.String(
         required=True,
         validate=[

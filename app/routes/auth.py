@@ -9,6 +9,8 @@ from app.schemas.user_schema import (
     PasswordResetSchema,
     UserBaseSchema
 )
+
+
 from app.services.auth_service import generate_token, verify_token, blacklist_token
 from app.services.email_service import send_verification_email, send_password_reset_email
 from app.utils.decorators import token_required, validate_json
@@ -82,35 +84,49 @@ def register(validated_data):
         current_app.logger.error(f"Error during registration: {e}")
         return jsonify({'message': 'An error occurred during registration'}), 500
 
+from flask_cors import cross_origin
 
-# Verify email
-@auth_bp.route('/verify-email/<token>', methods=['GET'])
-def verify_email(token):
+@auth_bp.route('/verify-email', methods=['OPTIONS', 'GET', 'POST'])
+@cross_origin()
+def verify_email():
+    """Verify the user's email using the token from request."""
+
+    if request.method == "OPTIONS":
+        return jsonify({"message": "CORS preflight success"}), 200
+
+    # Debugging: Log received request data
+    data = request.get_json()
+    print("Received Data:", data)  # ✅ Debug incoming request
+
+    # Extract token properly
+    token = None
+    if request.method == "POST":
+        token = data.get("token")
+    else:
+        token = request.args.get("token")
+
+    if not token or not isinstance(token, str):
+        return jsonify({"message": "Missing or invalid verification token"}), 400
+
     try:
-        # Find user with this token
         user = User.query.filter_by(verification_token=token).first()
-
+        
         if not user:
-            return jsonify({'message': 'Invalid or expired verification token'}), 400
+            print(f"Invalid token received: {token}")  # ✅ Debug invalid tokens
+            return jsonify({"message": "Invalid token"}), 400
 
-        # Check if token is expired
-        if user.token_expiry < datetime.utcnow():
-            return jsonify({'message': 'Verification link has expired'}), 400
-
-        # Activate the user account
         user.is_active = True
-        user.verification_token = None
-        user.token_expiry = None
+        user.verification_token = None  # Remove token after verification
         db.session.commit()
 
-        return jsonify({'message': 'Email verified successfully. You can now log in.'}), 200
+        return jsonify({"message": "Email verified successfully"}), 200
+
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Error during email verification: {e}")
+        print(f"Exception Traceback: {e}")  # ✅ Debug full error traceback
         return jsonify({'message': 'An error occurred during email verification'}), 500
 
-
-# Login route
 @auth_bp.route('/login', methods=['POST'])
 @validate_json(UserLoginSchema)
 def login(validated_data):
@@ -127,92 +143,103 @@ def login(validated_data):
         # Generate JWT token
         token = generate_token(user.id)
 
-        return jsonify({
+        response_data = {
             'message': 'Login successful',
             'token': token,
             'user': UserBaseSchema().dump(user)
-        }), 200
+        }
+
+        # ✅ Check if user is admin and redirect accordingly
+        if user.is_admin:
+            response_data["redirect"] = "/admin-dashboard"
+        else:
+            response_data["redirect"] = "/dashboard"
+
+        return jsonify(response_data), 200
+
     except Exception as e:
         current_app.logger.error(f"Error during login: {e}")
         return jsonify({'message': 'An error occurred during login'}), 500
 
 
-# Request password reset
+
 @auth_bp.route('/password-reset-request', methods=['POST'])
 @validate_json(PasswordResetRequestSchema)
 def request_password_reset(validated_data):
+    """Handle password reset request and send an email with a reset token."""
     try:
-        # Find user by email
         user = User.query.filter_by(email=validated_data['email']).first()
 
         if not user:
-            # Return generic response for security
             return jsonify({'message': 'If your email is registered, you will receive a password reset link'}), 200
 
         # Generate reset token
         token = generate_secure_token()
-        user.verification_token = token
+        user.reset_token = token  
         user.token_expiry = datetime.utcnow() + timedelta(hours=1)
-        
+
         # Send password reset email
-        reset_url = url_for('auth.reset_password_form', token=token, _external=True)
+        reset_url = url_for('auth.reset_password', token=token, _external=True)
+
+
         email_sent = send_password_reset_email(user.email, token)
 
         if not email_sent:
             db.session.rollback()
             current_app.logger.error(f"Failed to send password reset email to {user.email}")
-            # Still return success for security reasons
             return jsonify({'message': 'If your email is registered, you will receive a password reset link'}), 200
-        
+
         db.session.commit()
         return jsonify({'message': 'If your email is registered, you will receive a password reset link'}), 200
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Error during password reset request: {e}")
+        print(f"Error Traceback: {e}")  # ✅ Add this for debugging
         return jsonify({'message': 'An error occurred during password reset request'}), 500
 
 
-# GET endpoint to render the password reset form (frontend will handle this)
-@auth_bp.route('/password-reset/<token>', methods=['GET'])
-def reset_password_form(token):
-    # This endpoint would typically redirect to a frontend page that handles the reset
-    # For API-only backends, this might redirect to a frontend URL
-    return jsonify({'message': 'Please submit your new password', 'token': token}), 200
-
-
-# Reset password (actual processing of the reset)
 @auth_bp.route('/password-reset', methods=['POST'])
-@validate_json(PasswordResetSchema)
-def reset_password(validated_data):
+def reset_password():
+    """Validate password reset token and update user's password."""
     try:
-        token = validated_data.get('token')
-        if not token:
-            return jsonify({'message': 'Token is required'}), 400
-            
-        # Find user with this token
-        user = User.query.filter_by(verification_token=token).first()
+        data = request.get_json()
+        
+        # Debugging: Print received data
+        print("Received Data:", data)
 
+        # Extract data from request
+        token = data.get('token')
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+
+        if not token or not password or not confirm_password:
+            return jsonify({'message': 'Token, password, and confirm password are required'}), 400
+
+        # Debugging: Check if token matches any user
+        user = User.query.filter_by(reset_token=token).first()
         if not user:
+            print("Invalid Token:", token)
             return jsonify({'message': 'Invalid or expired token'}), 400
 
-        # Check if token is expired
-        if user.token_expiry < datetime.utcnow():
+        # Ensure token has not expired
+        if user.token_expiry is None or user.token_expiry < datetime.utcnow():
             return jsonify({'message': 'Password reset link has expired'}), 400
 
-        # Ensure password and confirm_password match
-        if validated_data['password'] != validated_data.get('confirm_password', ''):
+        # Validate password confirmation
+        if password != confirm_password:
             return jsonify({'message': 'Passwords do not match'}), 400
 
-        # Update password
-        user.password_hash = generate_password_hash(validated_data['password'])
-        user.verification_token = None
+        # Update user's password securely
+        user.password_hash = generate_password_hash(password)
+        user.reset_token = None  # Clear token after successful reset
         user.token_expiry = None
         db.session.commit()
 
         return jsonify({'message': 'Password updated successfully'}), 200
+
     except Exception as e:
         db.session.rollback()
-        current_app.logger.error(f"Error during password reset: {e}")
+        print(f"Error during password reset: {e}")  # ✅ Debugging
         return jsonify({'message': 'An error occurred during password reset'}), 500
 
 
