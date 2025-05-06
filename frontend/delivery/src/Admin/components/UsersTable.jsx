@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Eye, ExternalLink } from "lucide-react";
+import { Eye, ExternalLink, MoreHorizontal } from "lucide-react"; // Added MoreHorizontal for the toggle button
 import "./UsersTable.css";
 
 const UsersTable = ({ users }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const [openDropdownId, setOpenDropdownId] = useState(null); // State to track open dropdown
+
   const trimmedSearchTerm = searchTerm.trim().toLowerCase();
   
   const filteredUsers = users.filter(user =>
@@ -56,13 +57,26 @@ const UsersTable = ({ users }) => {
                 <td>{user.orders}</td>
                 <td>{user.joined}</td>
                 <td>
-                  <div className="table-actions">
-                    <button className="action-button">
-                      <Eye className="action-icon" />
+                  <div style={{ position: 'relative' }}> {/* Relative container for absolute positioning */}
+                    <button
+                      className="action-button"
+                      onClick={() => setOpenDropdownId(openDropdownId === user.id ? null : user.id)}
+                    >
+                      <MoreHorizontal className="action-icon" /> {/* Icon to indicate a menu */}
                     </button>
-                    <button className="action-button">
-                      <ExternalLink className="action-icon" />
-                    </button>
+                    {openDropdownId === user.id && (
+                      <div className="dropdown-menu">
+                        <button className="dropdown-item">
+                          <Eye className="action-icon" /> View
+                        </button>
+                        <button className="dropdown-item">
+                          <ExternalLink className="action-icon" /> Open
+                        </button>
+                        {/* Add more options as needed */}
+                        <button className="dropdown-item">Edit</button>
+                        <button className="dropdown-item">Delete</button>
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>

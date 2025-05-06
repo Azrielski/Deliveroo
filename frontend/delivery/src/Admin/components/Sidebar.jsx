@@ -1,16 +1,18 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ShoppingCart, Users, Bike, LogOut } from "lucide-react";
 import "./Sidebar.css";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <div className="logo-container">
+        <Link to="/admin/dashboard" className="logo-container" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Bike className="sidebar-logo" />
           <h1 className="sidebar-title">Deliveroo Admin</h1>
-        </div>
+        </Link>
       </div>
       
       <nav className="sidebar-nav">
@@ -56,7 +58,7 @@ const Sidebar = () => {
       </nav>
       
       <div className="sidebar-footer">
-        <button className="logout-btn">
+        <button className="logout-btn" onClick={() => navigate('/')}>
           <LogOut className="logout-icon" />
           <span>Logout</span>
         </button>
