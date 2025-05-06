@@ -35,7 +35,6 @@ function Navbar(){
 
     const handleLogoClick=(e)=>{
         e.preventDefault();
-        console.log("Logo clicked - navigating to /");
         navigate('/')
         window.scrollTo(0, 0);
     }
