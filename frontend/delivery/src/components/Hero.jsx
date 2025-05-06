@@ -1,5 +1,7 @@
 import React from 'react';
 import './Hero.css'
+import kenyaImage from '../assets/kenya.png';
+
 function Hero(){
     return(
         <>
@@ -11,9 +13,8 @@ function Hero(){
             <div className="hero-content">
                 <h1>Manage All Your Deliveries Under One Roof</h1>
                 <p>Deliver smart across Kenya using our reliable delivery services</p>
-                <div className="location-input">
-                <input type="text" placeholder="Enter your current location" />
-                <button>Find Services</button>
+                <div className='image-column'>
+                    <img src={kenyaImage} alt="Kenya Map" />
                 </div>
             </div>
             </section>

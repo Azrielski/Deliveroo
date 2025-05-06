@@ -1,11 +1,17 @@
 .hero {
     background-color: #4682b4; /* steelblue */
     color: white;
-    padding: 4rem 2rem;
+    padding-top: 4rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
     text-align: center;
     width: 70%;
     margin: 10px auto;
     border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
   }
   
   .hero-content h1 {
@@ -15,7 +21,6 @@
   
   .hero-content p {
     font-size: 1.2rem;
-    margin-bottom: 2rem;
   }
   
   .location-input {
@@ -47,12 +52,29 @@
     background-color: #dbeeff;
   }
   
+  .image-column img{
+    height: 250px;
+    width: auto;
+  }
+
   @media (max-width: 768px) {
-    .hero-content h1 {
-      font-size: 2rem;
+    .hero-content {
+      padding: 1rem;
     }
-    .location-input input {
-      width: 100%;
+  
+    .hero-content h1 {
+      font-size: 1.6rem;
+    }
+  
+    .hero-content p {
+      font-size: 18px;
+      text-wrap: wrap;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    .image-column img {
+      height: 180px;
     }
   }
   
