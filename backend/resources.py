@@ -1,332 +1,292 @@
 from flask import request, jsonify
-from flask_restful import Resource, abort
-from werkzeug.exceptions import BadRequest
+from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from models import db, User, Parcel, TrackingUpdate, Rating, Payment, Driver
+from helpers import assign_driver_automatically, admin_required
 
-from models import db, User, Parcel, TrackingUpdate, Rating ,Driver
 
-def get_user_or_404(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        abort(404, message=f"User with id {user_id} not found")
-    return user
+class UserRegister(Resource):
+    def post(self):
+        data = request.get_json()
+        if User.query.filter_by(username=data['username']).first():
+            return {'message': 'Username already exists'}, 409
+        user = User(**data)
+        db.session.add(user)
+        db.session.commit()
+        return {'message': 'User created successfully'}, 201
 
-def is_owner_or_admin(user_id):
-    current_user_id = get_jwt_identity()
-    if current_user_id != user_id:
-        current_user = get_user_or_404(current_user_id)
-        if not current_user.is_admin:
-            raise BadRequest("You can only modify your own data or must be admin")
-    return True
-
-class UsersResource(Resource):
+# USER CRUD 
+class UserDetail(Resource):
+    @jwt_required()
     def get(self):
-        users = User.query.all()
-        return jsonify({
-            "status": "success",
-            "message": "Users fetched successfully",
-            "data": [{
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "is_admin": user.is_admin,
-                "is_driver": user.is_driver
-            } for user in users]
-        }), 200
-
-class UserResource(Resource):
-    def get(self, id):
-        user = get_user_or_404(id)
-        return jsonify({
-            "status": "success",
-            "message": f"User {user.username} fetched successfully",
-            "data": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "is_admin": user.is_admin,
-                "is_driver": user.is_driver
-            }
-        }), 200
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+        if not user:
+            return {'message': 'User not found'}, 404
+        return user.to_dict(), 200
 
     @jwt_required()
-    def delete(self, id):
-        user = get_user_or_404(id)
-        is_owner_or_admin(id)
+    def put(self):
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        data = request.get_json()
+        user.username = data['username'] if 'username' in data else user.username
+        user.email = data['email'] if 'email' in data else user.email
+        db.session.commit()
+        return user.to_dict(), 200
+
+    @jwt_required()
+    def delete(self):
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+        if not user:
+            return {'message': 'User not found'}, 404
+
         db.session.delete(user)
         db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"User {user.username} deleted successfully"
-        }), 200
+        return {'message': 'User deleted successfully'}, 200
 
-class DriversResource(Resource):
+#  USER PARCEL CRUD 
+class UserParcels(Resource):
     @jwt_required()
     def get(self):
-        drivers = User.query.filter_by(is_driver=True).all()
-        return jsonify({
-            "status": "success",
-            "message": "Drivers fetched successfully",
-            "data": [{
-                "id": d.id,
-                "username": d.username,
-                "email": d.email
-            } for d in drivers]
-        }), 200
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+        parcels = Parcel.query.filter_by(user_id=user.id).all()
+        return jsonify([parcel.to_dict() for parcel in parcels])
 
     @jwt_required()
     def post(self):
-        current_user = get_user_or_404(get_jwt_identity())
-        if not current_user.is_admin:
-            abort(403, message="Only admins can assign driver roles")
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
 
         data = request.get_json()
-        try:
-            user = get_user_or_404(data['user_id'])
-            user.is_driver = True
-            db.session.commit()
-            return jsonify({
-                "status": "success",
-                "message": f"User {user.username} assigned as driver"
-            }), 201
-        except KeyError:
-            raise BadRequest("Missing 'user_id' in the request body")
+        new_parcel = Parcel(
+            origin=data['origin'],
+            user_id=user.id,
+            payment_status='pending',  # initially set to pending
+            status='pending',
+            weight=data ['weight'] ,
+                      
+            description=data.get('description'),  
+            pickup_address=data['pickup_address'],
+            destination_address=data['destination_address'],
+    
+            present_location=data['pickup_address'],
+            pickup_lat=data.get('pickup_lat'),
+            pickup_lon=data.get('pickup_lon'),
+            destination_lat=data.get('destination_lat'),
+            destination_lon=data.get('destination_lon') # initially set to pending
+        )
+        # Assigning a driver automatically when the parcel is created
+        new_parcel.driver_id = assign_driver_automatically()
 
-class ParcelsResource(Resource):
+        db.session.add(new_parcel)
+        db.session.commit()
+        return new_parcel.to_dict(), 201
+
+class ParcelDetail(Resource):
     @jwt_required()
+    def get(self, parcel_id):
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+            return {'message': 'Parcel not found'}, 404
+        return  {
+            'description':parcel.description,
+            'pickup_address': parcel.pickup_address,
+            'destination_address': parcel.destination_address,
+            'present_location': parcel.present_location,
+            'status': parcel.status,
+            'pickup_lat': parcel.pickup_lat,
+            'pickup_lon': parcel.pickup_lon,
+            'destination_lat': parcel.destination_lat,
+            'destination_lon': parcel.destination_lon
+        },200
+
+    @jwt_required()
+    def put(self, parcel_id):
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+
+            return {'message': 'Parcel not found'}, 404
+            if parcel.status in ('delivered', 'cancelled'):
+               abort(400, message="Cannot modify delivered/cancelled parcel")
+
+        data = request.get_json()
+        if 'destination' in data:
+            parcel.destination = data['destination']
+        db.session.commit()
+        return parcel.to_dict(), 200
+       
+
+
+   
+
+    @jwt_required()
+    def delete(self, parcel_id):
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+            return {'message': 'Parcel not found'}, 404
+        db.session.delete(parcel)
+        db.session.commit()
+        return {'message': 'Parcel deleted'}, 200
+
+#  TRACKING 
+class ParcelTracking(Resource):
+    @jwt_required()
+    def get(self, parcel_id):
+        current_user = get_jwt_identity()
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+            return {'message': 'Parcel not found'}, 404
+        if parcel.user_id != current_user:
+            return {'message': 'You can only track your own parcels'}, 403
+        updates = TrackingUpdate.query.filter_by(parcel_id=parcel_id).all()
+        return jsonify([u.to_dict() for u in updates])
+
+# RATING 
+class ParcelRating(Resource):
+    @jwt_required()
+    def post(self, parcel_id):
+        data = request.get_json()
+        rating = Rating(
+            parcel_id=parcel_id,
+            stars=data['stars'],
+            comment=data.get('comment')
+        )
+        db.session.add(rating)
+        db.session.commit()
+        return rating.to_dict(), 201
+
+#  DRIVER RATING 
+class DriverRating(Resource):
+    @jwt_required()
+    def post(self, driver_id):
+        data = request.get_json()
+        driver = Driver.query.get(driver_id)
+        if not driver:
+            return {'message': 'Driver not found'}, 404
+        rating = Rating(
+            driver_id=driver_id,
+            stars=data['stars'],
+            comment=data.get('comment')
+        )
+        db.session.add(rating)
+        db.session.commit()
+        return rating.to_dict(), 201
+
+# PAYMENT 
+class ParcelPayment(Resource):
+    @jwt_required()
+    def post(self, parcel_id):
+        current_user = get_jwt_identity()
+        parcel = Parcel.query.get(parcel_id)
+
+        if not parcel:
+            return {'message': 'Parcel not found'}, 404
+        if parcel.user_id != current_user:
+            return {'message': 'You can only pay for your own parcels'}, 403
+        
+        data = request.get_json()
+
+        # If the parcel is being paid before delivery (upfront)
+        if parcel.payment_status == 'pending':
+            payment = Payment(
+                parcel_id=parcel.id,
+                amount=data['amount'],
+                status='paid'  # Automatically mark as paid when the user pays upfront
+            )
+            db.session.add(payment)
+            db.session.commit()
+
+            parcel.payment_status = 'paid'  # Change the parcel's payment status to 'paid'
+            db.session.commit()
+            
+            return {'message': 'Payment successful, parcel is now paid', 'payment': payment.to_dict()}, 201
+
+        # If the parcel is paid on delivery (and is already delivered)
+        elif parcel.payment_status == 'delivered' and parcel.delivery_status == 'delivered':
+            payment = Payment(
+                parcel_id=parcel.id,
+                amount=data['amount'],
+                status='paid'  # Mark the payment as paid when the parcel is delivered
+            )
+            db.session.add(payment)
+            db.session.commit()
+
+            parcel.payment_status = 'paid'
+            db.session.commit()
+
+            return {'message': 'Payment successful, parcel has been delivered', 'payment': payment.to_dict()}, 201
+
+        return {'message': 'Payment not allowed for this parcel state'}, 400
+
+# ADMIN DASHBOARD 
+class AdminAllParcels(Resource):
+    @jwt_required()
+    @admin_required
     def get(self):
         parcels = Parcel.query.all()
-        return jsonify({
-            "status": "success",
-            "message": "Parcels fetched successfully",
-            "data": [{
-                "id": p.id,
-                "description": p.description,
-                "weight": p.weight,
-                "destination": p.destination,
-                "status": p.status,
-                "user_id": p.user_id,
-                "driver_id": p.driver_id
-            } for p in parcels]
-        }), 200
+        return jsonify([p.to_dict() for p in parcels])
 
+class AdminUsers(Resource):
     @jwt_required()
-    def post(self):
-        data = request.get_json()
-        try:
-            parcel = Parcel(
-                description=data['description'],
-                weight=data['weight'],
-                destination=data['destination'],
-                status=data.get('status', 'Pending'),
-                user_id=data['user_id']
-            )
-            db.session.add(parcel)
-            db.session.commit()
-            return jsonify({
-                "status": "success",
-                "message": f"Parcel {parcel.description} created",
-                "id": parcel.id
-            }), 201
-        except KeyError as e:
-            raise BadRequest(f"Missing field: {e.args[0]}")
-
-class ParcelResource(Resource):
-    @jwt_required()
-    def get(self, id):
-        p = Parcel.query.get_or_404(id)
-        return jsonify({
-            "status": "success",
-            "message": f"Parcel {p.id} fetched successfully",
-            "data": {
-                "id": p.id,
-                "description": p.description,
-                "weight": p.weight,
-                "destination": p.destination,
-                "status": p.status,
-                "user_id": p.user_id,
-                "driver_id": p.driver_id
-            }
-        }), 200
-
-    @jwt_required()
-    def put(self, id):
-        data = request.get_json()
-        p = Parcel.query.get_or_404(id)
-        is_owner_or_admin(p.user_id)
-
-        p.description = data.get('description', p.description)
-        p.weight = data.get('weight', p.weight)
-        p.destination = data.get('destination', p.destination)
-        p.status = data.get('status', p.status)
-        if 'driver_id' in data:
-            p.driver_id = data['driver_id']
-
-        db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"Parcel {p.id} updated successfully"}), 200
-
-    @jwt_required()
-    def delete(self, id):
-        p = Parcel.query.get_or_404(id)
-        is_owner_or_admin(p.user_id)
-        db.session.delete(p)
-        db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"Parcel {p.id} deleted successfully"}), 204
-
-class TrackingUpdatesResource(Resource):
-    @jwt_required()
+    @admin_required
     def get(self):
-        updates = TrackingUpdate.query.all()
-        return jsonify({
-            "status": "success",
-            "message": "Tracking updates fetched successfully",
-            "data": [{
-                "id": u.id,
-                "update_text": u.update_text,
-                "timestamp": u.timestamp.isoformat(),
-                "parcel_id": u.parcel_id
-            } for u in updates]
-        }), 200
+        users = User.query.all()
+        return jsonify([u.to_dict() for u in users])
 
+class AdminRatings(Resource):
     @jwt_required()
-    def post(self):
-        data = request.get_json()
-        try:
-            update = TrackingUpdate(
-                update_text=data['update_text'],
-                parcel_id=data['parcel_id']
-            )
-            db.session.add(update)
-            db.session.commit()
-            return jsonify({
-                "status": "success",
-                "message": "Tracking update added",
-                "id": update.id
-            }), 201
-        except KeyError as e:
-            raise BadRequest(f"Missing field: {e.args[0]}")
-
-class TrackingUpdateResource(Resource):
-    @jwt_required()
-    def get(self, id):
-        u = TrackingUpdate.query.get_or_404(id)
-        return jsonify({
-            "status": "success",
-            "message": f"Tracking update {u.id} fetched successfully",
-            "data": {
-                "id": u.id,
-                "update_text": u.update_text,
-                "timestamp": u.timestamp.isoformat(),
-                "parcel_id": u.parcel_id
-            }
-        }), 200
-
-    @jwt_required()
-    def put(self, id):
-        u = TrackingUpdate.query.get_or_404(id)
-        data = request.get_json()
-        u.update_text = data.get('update_text', u.update_text)
-        db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"Tracking update {u.id} updated"
-        }), 200
-
-    @jwt_required()
-    def delete(self, id):
-        u = TrackingUpdate.query.get_or_404(id)
-        db.session.delete(u)
-        db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"Tracking update {u.id} deleted"
-        }), 204
-
-class RatingsResource(Resource):
-    @jwt_required()
+    @admin_required
     def get(self):
         ratings = Rating.query.all()
-        return jsonify({
-            "status": "success",
-            "message": "Ratings fetched successfully",
-            "data": [{
-                "id": r.id,
-                "stars": r.stars,
-                "feedback": r.feedback,
-                "parcel_id": r.parcel_id,
-                "user_id": r.user_id
-            } for r in ratings]
-        }), 200
+        return jsonify([r.to_dict() for r in ratings])
 
+class AdminTrackingUpdates(Resource):
     @jwt_required()
-    def post(self):
+    @admin_required
+    def post(self, parcel_id):
         data = request.get_json()
-        try:
-            rating = Rating(
-                stars=data['stars'],
-                feedback=data.get('feedback'),
-                parcel_id=data['parcel_id'],
-                user_id=data['user_id']
-            )
-            db.session.add(rating)
-            db.session.commit()
-            return jsonify({
-                "status": "success",
-                "message": "Rating added",
-                "id": rating.id
-            }), 201
-        except KeyError as e:
-            raise BadRequest(f"Missing field: {e.args[0]}")
+        update = TrackingUpdate(
+            parcel_id=parcel_id,
+            location=data['location'],
+            status=data['status']
+        )
+        db.session.add(update)
+        db.session.commit()
+        return update.to_dict(), 201
 
-class RatingResource(Resource):
+#  DRIVER CRUD
+class DriverDetail(Resource):
     @jwt_required()
-    def get(self, id):
-        r = Rating.query.get_or_404(id)
-        return jsonify({
-            "status": "success",
-            "message": f"Rating {r.id} fetched successfully",
-            "data": {
-                "id": r.id,
-                "stars": r.stars,
-                "feedback": r.feedback,
-                "parcel_id": r.parcel_id,
-                "user_id": r.user_id
-            }
-        }), 200
+    def get(self, driver_id):
+        driver = Driver.query.get(driver_id)
+        if not driver:
+            return {'message': 'Driver not found'}, 404
+        return driver.to_dict(), 200
 
     @jwt_required()
-    def put(self, id):
-        r = Rating.query.get_or_404(id)
+    def put(self, driver_id):
+        driver = Driver.query.get(driver_id)
+        if not driver:
+            return {'message': 'Driver not found'}, 404
+
         data = request.get_json()
-        r.stars = data.get('stars', r.stars)
-        r.feedback = data.get('feedback', r.feedback)
+        driver.name = data['name'] if 'name' in data else driver.name
+        driver.phone_number = data['phone_number'] if 'phone_number' in data else driver.phone_number
         db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"Rating {r.id} updated"
-        }), 200
+        return driver.to_dict(), 200
 
     @jwt_required()
-    def delete(self, id):
-        r = Rating.query.get_or_404(id)
-        db.session.delete(r)
-        db.session.commit()
-        return jsonify({
-            "status": "success",
-            "message": f"Rating {r.id} deleted"
-        }), 204
+    def delete(self, driver_id):
+        driver = Driver.query.get(driver_id)
+        if not driver:
+            return {'message': 'Driver not found'}, 404
 
-def register_routes(api):
-    api.add_resource(UsersResource, '/users')
-    api.add_resource(UserResource, '/users/<int:id>')
-    api.add_resource(DriversResource, '/drivers')
-    api.add_resource(ParcelsResource, '/parcels')
-    api.add_resource(ParcelResource, '/parcels/<int:id>')
-    api.add_resource(TrackingUpdatesResource, '/tracking')
-    api.add_resource(TrackingUpdateResource, '/tracking/<int:id>')
-    api.add_resource(RatingsResource, '/ratings')
-    api.add_resource(RatingResource, '/ratings/<int:id>')
+        db.session.delete(driver)
+        db.session.commit()
+        return {'message': 'Driver deleted successfully'}, 200
