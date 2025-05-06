@@ -100,6 +100,18 @@ function Services({ id }) {
           Discover why thousands of small businesses choose Deliveroo to grow their online business.
         </h2>
 
+        <p className="description">
+          Deliveroo is more than just a courier company — we're your reliable logistics partner. 
+          Whether you're a local shop or a growing e-commerce brand, we help streamline your delivery 
+          operations so you can focus on scaling your business.
+        </p>
+
+        <p className="description">
+          From same-day parcel deliveries to managing bulk shipments and real-time tracking, 
+          we’ve got your back. With flexible options based on package weight, speed, and location, 
+          Deliveroo makes shipping simpler, faster, and smarter.
+        </p>
+
         <div className="stats-grid">
           <div className="stat-item">
             <div className="stat-number">{formatNumber(animatedStats.businesses)}</div>
