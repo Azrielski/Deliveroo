@@ -111,7 +111,7 @@ class Rating(db.Model, BaseModel, SerializerMixin):
         return f"<Rating {self.stars}★ by User {self.user_id}>"
     
 
-class Driver(db.Mode, BaseModel, SerializerMixin):
+class Driver(db.Model, BaseModel, SerializerMixin):
     __tablename__ = 'drivers'
     
     first_name = db.Column(db.String(80), nullable = False)
@@ -121,11 +121,11 @@ class Driver(db.Mode, BaseModel, SerializerMixin):
     
     is_active  = db.Column(db.Boolean, default = True)
     
-    assigned_parcels = db.relationship('Parcels', back_populates = 'driver', lazy=True)
+    assigned_parcels = db.relationship('Parcel', back_populates = 'driver', lazy=True)
     
     serialize_rules = ('-assigned_parcels.driver',)
     
     def __repr__(self):
-        return f"<Driver {self.unique_name}, Available: {self.is_available}>"
+        return f"<Driver {self.unique_name}, Available: {self.is_active}>"
 
     

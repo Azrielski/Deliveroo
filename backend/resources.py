@@ -3,8 +3,9 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, User, Parcel, TrackingUpdate, Rating, Payment, Driver
 from helpers import assign_driver_automatically, admin_required
+from datetime import datetime
 
-
+# User Registration
 class UserRegister(Resource):
     def post(self):
         data = request.get_json()
@@ -15,7 +16,7 @@ class UserRegister(Resource):
         db.session.commit()
         return {'message': 'User created successfully'}, 201
 
-# USER CRUD 
+# User Details
 class UserDetail(Resource):
     @jwt_required()
     def get(self):
@@ -33,8 +34,8 @@ class UserDetail(Resource):
             return {'message': 'User not found'}, 404
 
         data = request.get_json()
-        user.username = data['username'] if 'username' in data else user.username
-        user.email = data['email'] if 'email' in data else user.email
+        user.username = data.get('username', user.username)
+        user.email = data.get('email', user.email)
         db.session.commit()
         return user.to_dict(), 200
 
@@ -49,7 +50,7 @@ class UserDetail(Resource):
         db.session.commit()
         return {'message': 'User deleted successfully'}, 200
 
-#  USER PARCEL CRUD 
+# User Parcels
 class UserParcels(Resource):
     @jwt_required()
     def get(self):
@@ -62,68 +63,59 @@ class UserParcels(Resource):
     def post(self):
         current_user = get_jwt_identity()
         user = User.query.filter_by(username=current_user).first()
-
         data = request.get_json()
+
+        required_fields = ['origin', 'weight', 'pickup_address', 'destination_address', 'recipient_name', 'recipient_phone']
+        for field in required_fields:
+            if field not in data:
+                return {'message': f'{field} is required.'}, 400
+
         new_parcel = Parcel(
             origin=data['origin'],
             user_id=user.id,
-            payment_status='pending',  # initially set to pending
+            weight=data['weight'],
+            payment_status='pending',
             status='pending',
-            weight=data ['weight'] ,
-                      
-            description=data.get('description'),  
+            description=data.get('description'),
             pickup_address=data['pickup_address'],
             destination_address=data['destination_address'],
-    
             present_location=data['pickup_address'],
             pickup_lat=data.get('pickup_lat'),
             pickup_lon=data.get('pickup_lon'),
             destination_lat=data.get('destination_lat'),
-            destination_lon=data.get('destination_lon') # initially set to pending
+            destination_lon=data.get('destination_lon'),
+            recipient_name=data['recipient_name'],
+            recipient_phone=data['recipient_phone'],
+            recipient_email=data.get('recipient_email')
         )
-        # Assigning a driver automatically when the parcel is created
-        new_parcel.driver_id = assign_driver_automatically()
 
+        new_parcel.driver_id = assign_driver_automatically()
         db.session.add(new_parcel)
         db.session.commit()
         return new_parcel.to_dict(), 201
 
+# Parcel Details
 class ParcelDetail(Resource):
     @jwt_required()
     def get(self, parcel_id):
         parcel = Parcel.query.get(parcel_id)
         if not parcel:
             return {'message': 'Parcel not found'}, 404
-        return  {
-            'description':parcel.description,
-            'pickup_address': parcel.pickup_address,
-            'destination_address': parcel.destination_address,
-            'present_location': parcel.present_location,
-            'status': parcel.status,
-            'pickup_lat': parcel.pickup_lat,
-            'pickup_lon': parcel.pickup_lon,
-            'destination_lat': parcel.destination_lat,
-            'destination_lon': parcel.destination_lon
-        },200
+        return parcel.to_dict(), 200
 
     @jwt_required()
-    def put(self, parcel_id):
+    def patch(self, parcel_id):
         parcel = Parcel.query.get(parcel_id)
         if not parcel:
-
             return {'message': 'Parcel not found'}, 404
-            if parcel.status in ('delivered', 'cancelled'):
-               abort(400, message="Cannot modify delivered/cancelled parcel")
+        if parcel.status in ('delivered', 'cancelled'):
+            return {'message': 'Cannot modify delivered/cancelled parcel'}, 400
 
         data = request.get_json()
-        if 'destination' in data:
-            parcel.destination = data['destination']
+        if 'destination_address' in data:
+            parcel.destination_address = data['destination_address']
         db.session.commit()
         return parcel.to_dict(), 200
-       
-
-
-   
 
     @jwt_required()
     def delete(self, parcel_id):
@@ -134,7 +126,23 @@ class ParcelDetail(Resource):
         db.session.commit()
         return {'message': 'Parcel deleted'}, 200
 
-#  TRACKING 
+# Parcel Delivery Confirmation
+class ParcelDeliveryConfirm(Resource):
+    @jwt_required()
+    def post(self, parcel_id):
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+            return {'message': 'Parcel not found'}, 404
+        if parcel.status != 'in_transit':
+            return {'message': 'Parcel not in transit'}, 400
+
+        parcel.status = 'delivered'
+        parcel.present_location = parcel.destination_address
+        parcel.delivered_at = datetime.utcnow()
+        db.session.commit()
+        return {'message': 'Parcel marked as delivered'}, 200
+
+# Parcel Tracking
 class ParcelTracking(Resource):
     @jwt_required()
     def get(self, parcel_id):
@@ -143,11 +151,11 @@ class ParcelTracking(Resource):
         if not parcel:
             return {'message': 'Parcel not found'}, 404
         if parcel.user_id != current_user:
-            return {'message': 'You can only track your own parcels'}, 403
+            return {'message': 'Unauthorized access'}, 403
         updates = TrackingUpdate.query.filter_by(parcel_id=parcel_id).all()
         return jsonify([u.to_dict() for u in updates])
 
-# RATING 
+# Parcel Rating
 class ParcelRating(Resource):
     @jwt_required()
     def post(self, parcel_id):
@@ -161,7 +169,7 @@ class ParcelRating(Resource):
         db.session.commit()
         return rating.to_dict(), 201
 
-#  DRIVER RATING 
+# Driver Rating
 class DriverRating(Resource):
     @jwt_required()
     def post(self, driver_id):
@@ -178,7 +186,7 @@ class DriverRating(Resource):
         db.session.commit()
         return rating.to_dict(), 201
 
-# PAYMENT 
+# Parcel Payment
 class ParcelPayment(Resource):
     @jwt_required()
     def post(self, parcel_id):
@@ -188,43 +196,23 @@ class ParcelPayment(Resource):
         if not parcel:
             return {'message': 'Parcel not found'}, 404
         if parcel.user_id != current_user:
-            return {'message': 'You can only pay for your own parcels'}, 403
-        
-        data = request.get_json()
+            return {'message': 'Unauthorized access'}, 403
 
-        # If the parcel is being paid before delivery (upfront)
+        data = request.get_json()
         if parcel.payment_status == 'pending':
             payment = Payment(
                 parcel_id=parcel.id,
                 amount=data['amount'],
-                status='paid'  # Automatically mark as paid when the user pays upfront
+                status='paid'
             )
             db.session.add(payment)
-            db.session.commit()
-
-            parcel.payment_status = 'paid'  # Change the parcel's payment status to 'paid'
-            db.session.commit()
-            
-            return {'message': 'Payment successful, parcel is now paid', 'payment': payment.to_dict()}, 201
-
-        # If the parcel is paid on delivery (and is already delivered)
-        elif parcel.payment_status == 'delivered' and parcel.delivery_status == 'delivered':
-            payment = Payment(
-                parcel_id=parcel.id,
-                amount=data['amount'],
-                status='paid'  # Mark the payment as paid when the parcel is delivered
-            )
-            db.session.add(payment)
-            db.session.commit()
-
             parcel.payment_status = 'paid'
             db.session.commit()
-
-            return {'message': 'Payment successful, parcel has been delivered', 'payment': payment.to_dict()}, 201
+            return {'message': 'Payment successful', 'payment': payment.to_dict()}, 201
 
         return {'message': 'Payment not allowed for this parcel state'}, 400
 
-# ADMIN DASHBOARD 
+# Admin: All Parcels
 class AdminAllParcels(Resource):
     @jwt_required()
     @admin_required
@@ -232,6 +220,7 @@ class AdminAllParcels(Resource):
         parcels = Parcel.query.all()
         return jsonify([p.to_dict() for p in parcels])
 
+# Admin: Users
 class AdminUsers(Resource):
     @jwt_required()
     @admin_required
@@ -239,6 +228,7 @@ class AdminUsers(Resource):
         users = User.query.all()
         return jsonify([u.to_dict() for u in users])
 
+# Admin: Ratings
 class AdminRatings(Resource):
     @jwt_required()
     @admin_required
@@ -246,6 +236,7 @@ class AdminRatings(Resource):
         ratings = Rating.query.all()
         return jsonify([r.to_dict() for r in ratings])
 
+# Admin: Tracking Updates
 class AdminTrackingUpdates(Resource):
     @jwt_required()
     @admin_required
@@ -260,7 +251,7 @@ class AdminTrackingUpdates(Resource):
         db.session.commit()
         return update.to_dict(), 201
 
-#  DRIVER CRUD
+# Driver Details
 class DriverDetail(Resource):
     @jwt_required()
     def get(self, driver_id):
@@ -276,8 +267,8 @@ class DriverDetail(Resource):
             return {'message': 'Driver not found'}, 404
 
         data = request.get_json()
-        driver.name = data['name'] if 'name' in data else driver.name
-        driver.phone_number = data['phone_number'] if 'phone_number' in data else driver.phone_number
+        driver.name = data.get('name', driver.name)
+        driver.phone_number = data.get('phone_number', driver.phone_number)
         db.session.commit()
         return driver.to_dict(), 200
 
