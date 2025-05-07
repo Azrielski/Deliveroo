@@ -11,7 +11,7 @@ const Users = () => {
       email: "john.smith@example.com",
       phone: "+1 (555) 123-4567",
       orders: 12,
-      joined: "Jan 15, 2022",
+      joined: "Jan 15, 2023",
     },
     {
       id: "#USR-002",
@@ -19,7 +19,7 @@ const Users = () => {
       email: "sarahj@example.com",
       phone: "+1 (555) 987-6543",
       orders: 8,
-      joined: "Mar 22, 2022",
+      joined: "Mar 22, 2024",
     },
     {
       id: "#USR-003",
@@ -27,7 +27,7 @@ const Users = () => {
       email: "michael.b@example.com",
       phone: "+1 (555) 456-7890",
       orders: 5,
-      joined: "Apr 10, 2023",
+      joined: "Apr 10, 2025",
     },
   ];
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Eye, ExternalLink, MoreHorizontal } from "lucide-react"; // Added MoreHorizontal for the toggle button
+import { Eye, ExternalLink, MoreHorizontal } from "lucide-react"; 
 import "./UsersTable.css";
 
 const UsersTable = ({ users }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [openDropdownId, setOpenDropdownId] = useState(null); // State to track open dropdown
+  const [openDropdownId, setOpenDropdownId] = useState(null); 
 
   const trimmedSearchTerm = searchTerm.trim().toLowerCase();
   
@@ -57,12 +57,12 @@ const UsersTable = ({ users }) => {
                 <td>{user.orders}</td>
                 <td>{user.joined}</td>
                 <td>
-                  <div style={{ position: 'relative' }}> {/* Relative container for absolute positioning */}
+                  <div style={{ position: 'relative' }}> 
                     <button
                       className="action-button"
                       onClick={() => setOpenDropdownId(openDropdownId === user.id ? null : user.id)}
                     >
-                      <MoreHorizontal className="action-icon" /> {/* Icon to indicate a menu */}
+                      <MoreHorizontal className="action-icon" />
                     </button>
                     {openDropdownId === user.id && (
                       <div className="dropdown-menu">
@@ -72,7 +72,6 @@ const UsersTable = ({ users }) => {
                         <button className="dropdown-item">
                           <ExternalLink className="action-icon" /> Open
                         </button>
-                        {/* Add more options as needed */}
                         <button className="dropdown-item">Edit</button>
                         <button className="dropdown-item">Delete</button>
                       </div>

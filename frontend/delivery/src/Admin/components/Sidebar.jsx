@@ -1,18 +1,21 @@
 import React from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Users, Bike, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, Bike, LogOut, X } from "lucide-react";
 import "./Sidebar.css";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <Link to="/admin/dashboard" className="logo-container" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Bike className="sidebar-logo" />
           <h1 className="sidebar-title">Deliveroo Admin</h1>
         </Link>
+        <button className="close-sidebar" onClick={() => setIsOpen(false)}>
+          <X className="close-icon" />
+        </button>
       </div>
       
       <nav className="sidebar-nav">

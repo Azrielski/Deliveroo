@@ -1,4 +1,3 @@
-// AuthFlow.jsx
 import React, { useState } from 'react';
 
 const AuthFlow = ({ onLogin }) => {

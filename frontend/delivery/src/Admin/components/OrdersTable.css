@@ -1,229 +1,252 @@
 .orders-container {
-    width: 100%;
-    padding: 20px;
-    background-color: #ffffff;
-  }
-  
-  .orders-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .orders-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #111827;
-    margin: 0;
-  }
-  
-  .orders-actions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .filter-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .export-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
-  .filter-dropdown {
-    position: relative;
-  }
-  
-  .filter-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 160px;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-  }
-  
-  .filter-item {
-    padding: 8px 16px;
-    cursor: pointer;
-  }
-  
-  .filter-item:hover {
-    background-color: #f3f4f6;
-  }
-  
-  .table-container {
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    overflow: visible; 
-  }
-  
-  .orders-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .orders-table th {
-    text-align: left;
-    padding: 12px 16px;
-    font-weight: 500;
-    font-size: 14px;
-    color: #6b7280;
-    background-color: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .orders-table td {
-    padding: 12px 16px;
-    font-size: 14px;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .order-id-cell {
-    color: #2563eb;
-    font-weight: 500;
-  }
-  
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  
-  .status-delivered {
-    background-color: #ecfdf5;
-    color: #047857;
-  }
-  
-  .status-pending {
-    background-color: #fffbeb;
-    color: #b45309;
-  }
-  
-  .status-transit {
-    background-color: #eff6ff;
-    color: #1d4ed8;
-  }
-  
-  .action-buttons {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .action-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: none;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #6b7280;
-  }
-  
-  .action-btn:hover {
-    background-color: #f3f4f6;
-  }
-  
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    font-size: 14px;
-  }
-  
-  .pagination-info {
-    color: #6b7280;
-  }
-  
-  .pagination-controls {
-    display: flex;
-    gap: 4px;
-  }
-  
-  .pagination-btn {
-    padding: 6px 12px;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .pagination-btn.active {
-    background-color: #2563eb;
-    color: white;
-    border-color: #2563eb;
-  }
-  
-  /* Dropdown styles */
-  .dropdown-container {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropdown-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 6px 12px;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
 
-  
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    z-index: 100; /* Higher value to avoid overlap issues */
-    max-height: 200px;
-    overflow-y: auto;
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.orders-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.orders-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filter-dropdown {
+  position: relative;
+}
+
+.filter-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 160px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.filter-item {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.filter-item:hover {
+  background-color: #f3f4f6;
+}
+
+.table-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: visible;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.orders-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.order-id-cell {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-delivered {
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.status-pending {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+
+.status-transit {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.action-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.pagination-info {
+  color: #6b7280;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.pagination-btn {
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-btn.active {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+/* Dropdown styles */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  width: 120px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
   }
-  
-  .dropdown-item {
+
+  .orders-table td,
+  .orders-table th {
     padding: 8px 12px;
-    cursor: pointer;
+    font-size: 12px;
   }
-  
-  .dropdown-item:hover {
-    background-color: #f3f4f6;
+
+  .pagination-controls {
+    flex-wrap: wrap;
   }
+
+  .pagination-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+}

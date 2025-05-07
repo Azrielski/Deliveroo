@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Eye, ExternalLink, ChevronDown } from "lucide-react";
 import "./OrdersTable.css";
 
@@ -72,9 +72,18 @@ const OrdersTable = () => {
 
   const Dropdown = ({ options, value, onChange, width = "100%" }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const triggerRef = useRef(null);
+
+    useEffect(() => {
+      if (isOpen && triggerRef.current) {
+        triggerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+      }
+    }, [isOpen]);
+
     return (
       <div className="dropdown-container" style={{ width }}>
         <button
+          ref={triggerRef}
           className="dropdown-trigger"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -82,7 +91,13 @@ const OrdersTable = () => {
           <ChevronDown size={16} />
         </button>
         {isOpen && (
-          <div className="dropdown-menu">
+          <div
+            className="dropdown-menu"
+            style={{
+              left: triggerRef.current && window.innerWidth - triggerRef.current.getBoundingClientRect().right < 120 ? "auto" : 0,
+              right: triggerRef.current && window.innerWidth - triggerRef.current.getBoundingClientRect().right < 120 ? 0 : "auto",
+            }}
+          >
             {options.map((option) => (
               <div
                 key={option.value}

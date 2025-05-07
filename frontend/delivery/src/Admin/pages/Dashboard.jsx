@@ -11,21 +11,21 @@ const Dashboard = () => {
       id: "#ORD-2023-156", 
       customer: "John Smith", 
       status: "transit", 
-      date: "May 15, 2023", 
+      date: "May 15, 2025", 
       amount: "24.99" 
     },
     { 
       id: "#ORD-2023-155", 
       customer: "Sarah Johnson", 
       status: "delivered", 
-      date: "May 14, 2023", 
+      date: "May 14, 2025", 
       amount: "18.50" 
     },
     { 
       id: "#ORD-2023-154", 
       customer: "Michael Brown", 
       status: "pending", 
-      date: "May 14, 2023", 
+      date: "May 14, 2025", 
       amount: "32.75" 
     },
   ];
