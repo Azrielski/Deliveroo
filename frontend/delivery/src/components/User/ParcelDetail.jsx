@@ -117,7 +117,7 @@ function ParcelDetail() {
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg mt-8">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/user")}
         className="mb-6 text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
       >
         ← Back to Dashboard
@@ -126,7 +126,7 @@ function ParcelDetail() {
         Parcel #{parcel.id}
       </h2>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 gap-4 mb-6">
         <div className="p-4 bg-blue-50 rounded-lg">
           <h3 className="text-sm font-medium text-blue-600 mb-2">Status</h3>
           <div
@@ -140,15 +140,6 @@ function ParcelDetail() {
           >
             {parcel.status}
           </div>
-        </div>
-
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-600 mb-2">
-            Current Location
-          </h3>
-          <p className="font-medium">
-            {parcel.present_location || "In transit"}
-          </p>
         </div>
       </div>
 
