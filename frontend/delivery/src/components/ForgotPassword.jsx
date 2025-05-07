@@ -32,7 +32,7 @@ function ForgotPassword() {
         <div className="logo-container" onClick={() => navigate('/')}>
           <h3 className="logo">Deliveroo</h3>
         </div>
-        <div className="form-card">
+        <div className="form-card" id='form-container'>
           <h2 className="form-title">Reset Password</h2>
           <p className="form-description">Enter your email address and we'll send you a link to reset your password.</p>
           <form onSubmit={handleSubmit}>
