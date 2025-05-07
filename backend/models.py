@@ -14,7 +14,7 @@ class BaseModel:
 
 # User model
 class User(db.Model, BaseModel, SerializerMixin):  
-    __tablename__ = "users"
+    __tablename__ = "users" 
 
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
@@ -50,21 +50,18 @@ class Parcel(db.Model, BaseModel, SerializerMixin):
     weight = db.Column(db.Float, nullable=False)
     destination_address = db.Column(db.String(225), nullable=False)
     status = db.Column(db.String(50), default='pending')
-<<<<<<< HEAD
     pickup_address=db.Column(db.String(50), nullable=False)
-=======
     pickup_address= db.Column(db.String(50), nullable=False)
->>>>>>> 0aa59ce548ce03b2f60b24316f6ae849105a3697
+    recipient_name = db.Column(db.String (100), nullable=False)
+    recipient_phone = db.Column(db.String(20), nullable=False)
 
-    # Coordinates
+    # Coordinates 
     pickup_lat = db.Column(db.Float, nullable=True)
     pickup_lon = db.Column(db.Float, nullable=True)
     destination_lat = db.Column(db.Float, nullable=True)
     destination_lon = db.Column(db.Float, nullable=True)
-<<<<<<< HEAD
 
-=======
->>>>>>> 0aa59ce548ce03b2f60b24316f6ae849105a3697
+    destination_lon = db.Column(db.Float, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='parcels', lazy=True)
