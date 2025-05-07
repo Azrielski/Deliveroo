@@ -1,22 +1,11 @@
 from flask import request, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, User, Parcel, TrackingUpdate, Rating, Payment, Driver
+from models import db, User, Parcel, TrackingUpdate, Rating,Driver
 from helpers import assign_driver_automatically, admin_required
 from datetime import datetime
 
-# User Registration
-class UserRegister(Resource):
-    def post(self):
-        data = request.get_json()
-        if User.query.filter_by(username=data['username']).first():
-            return {'message': 'Username already exists'}, 409
-        user = User(**data)
-        db.session.add(user)
-        db.session.commit()
-        return {'message': 'User created successfully'}, 201
-
-# User Details
+# User Detail Resource (GET, PATCH, DELETE)
 class UserDetail(Resource):
     @jwt_required()
     def get(self):
@@ -27,7 +16,7 @@ class UserDetail(Resource):
         return user.to_dict(), 200
 
     @jwt_required()
-    def put(self):
+    def patch(self):
         current_user = get_jwt_identity()
         user = User.query.filter_by(username=current_user).first()
         if not user:
@@ -50,7 +39,7 @@ class UserDetail(Resource):
         db.session.commit()
         return {'message': 'User deleted successfully'}, 200
 
-# User Parcels
+# User Parcels Resource (GET, POST)
 class UserParcels(Resource):
     @jwt_required()
     def get(self):
@@ -86,7 +75,6 @@ class UserParcels(Resource):
             destination_lon=data.get('destination_lon'),
             recipient_name=data['recipient_name'],
             recipient_phone=data['recipient_phone'],
-            
         )
 
         new_parcel.driver_id = assign_driver_automatically()
@@ -94,7 +82,7 @@ class UserParcels(Resource):
         db.session.commit()
         return new_parcel.to_dict(), 201
 
-# Parcel Details
+# Parcel Detail (GET, PATCH, DELETE)
 class ParcelDetail(Resource):
     @jwt_required()
     def get(self, parcel_id):
@@ -150,7 +138,7 @@ class ParcelTracking(Resource):
         parcel = Parcel.query.get(parcel_id)
         if not parcel:
             return {'message': 'Parcel not found'}, 404
-        if parcel.user_id != current_user:
+        if parcel.user.username != current_user:
             return {'message': 'Unauthorized access'}, 403
         updates = TrackingUpdate.query.filter_by(parcel_id=parcel_id).all()
         return jsonify([u.to_dict() for u in updates])
@@ -173,10 +161,10 @@ class ParcelRating(Resource):
 class DriverRating(Resource):
     @jwt_required()
     def post(self, driver_id):
-        data = request.get_json()
         driver = Driver.query.get(driver_id)
         if not driver:
             return {'message': 'Driver not found'}, 404
+        data = request.get_json()
         rating = Rating(
             driver_id=driver_id,
             stars=data['stars'],
@@ -186,33 +174,33 @@ class DriverRating(Resource):
         db.session.commit()
         return rating.to_dict(), 201
 
-# Parcel Payment
-class ParcelPayment(Resource):
-    @jwt_required()
-    def post(self, parcel_id):
-        current_user = get_jwt_identity()
-        parcel = Parcel.query.get(parcel_id)
+# # Parcel Payment
+# class ParcelPayment(Resource):
+#     @jwt_required()
+#     def post(self, parcel_id):
+#         current_user = get_jwt_identity()
+#         parcel = Parcel.query.get(parcel_id)
 
-        if not parcel:
-            return {'message': 'Parcel not found'}, 404
-        if parcel.user_id != current_user:
-            return {'message': 'Unauthorized access'}, 403
+#         if not parcel:
+#             return {'message': 'Parcel not found'}, 404
+#         if parcel.user.username != current_user:
+#             return {'message': 'Unauthorized access'}, 403
 
-        data = request.get_json()
-        if parcel.payment_status == 'pending':
-            payment = Payment(
-                parcel_id=parcel.id,
-                amount=data['amount'],
-                status='paid'
-            )
-            db.session.add(payment)
-            parcel.payment_status = 'paid'
-            db.session.commit()
-            return {'message': 'Payment successful', 'payment': payment.to_dict()}, 201
+#         if parcel.payment_status != 'pending':
+#             return {'message': 'Payment not allowed for this parcel state'}, 400
 
-        return {'message': 'Payment not allowed for this parcel state'}, 400
+#         data = request.get_json()
+#         payment = Payment(
+#             parcel_id=parcel.id,
+#             amount=data['amount'],
+#             status='paid'
+#         )
+#         db.session.add(payment)
+#         parcel.payment_status = 'paid'
+#         db.session.commit()
+#         return {'message': 'Payment successful', 'payment': payment.to_dict()}, 201
 
-# Admin: All Parcels
+# Admin: View All Parcels
 class AdminAllParcels(Resource):
     @jwt_required()
     @admin_required
@@ -251,7 +239,7 @@ class AdminTrackingUpdates(Resource):
         db.session.commit()
         return update.to_dict(), 201
 
-# Driver Details
+# Driver Detail (GET, PATCH, DELETE)
 class DriverDetail(Resource):
     @jwt_required()
     def get(self, driver_id):
@@ -261,7 +249,7 @@ class DriverDetail(Resource):
         return driver.to_dict(), 200
 
     @jwt_required()
-    def put(self, driver_id):
+    def patch(self, driver_id):
         driver = Driver.query.get(driver_id)
         if not driver:
             return {'message': 'Driver not found'}, 404
