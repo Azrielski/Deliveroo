@@ -48,16 +48,23 @@ class Parcel(db.Model, BaseModel, SerializerMixin):
 
     description = db.Column(db.String(225), nullable=False)
     weight = db.Column(db.Float, nullable=False)
-    destination = db.Column(db.String(225), nullable=False)
+    destination_address = db.Column(db.String(225), nullable=False)
     status = db.Column(db.String(50), default='pending')
+<<<<<<< HEAD
     pickup_address=db.Column(db.String(50), nullable=False)
+=======
+    pickup_address= db.Column(db.String(50), nullable=False)
+>>>>>>> 0aa59ce548ce03b2f60b24316f6ae849105a3697
 
     # Coordinates
     pickup_lat = db.Column(db.Float, nullable=True)
     pickup_lon = db.Column(db.Float, nullable=True)
     destination_lat = db.Column(db.Float, nullable=True)
     destination_lon = db.Column(db.Float, nullable=True)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0aa59ce548ce03b2f60b24316f6ae849105a3697
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='parcels', lazy=True)
