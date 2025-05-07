@@ -6,30 +6,30 @@ const Users = () => {
   // Users Mock data
   const users = [
     {
-      id: "#USR-001",
-      name: "John Smith",
-      email: "john.smith@example.com",
-      phone: "+1 (555) 123-4567",
+      id: "#KE-001",
+      name: "Joseph Otieno",
+      email: "j.otieno@example.co.ke",
+      phone: "+254 712 345 678",
       orders: 12,
-      joined: "Jan 15, 2023",
+      joined: "15 Jan 2023",
     },
     {
-      id: "#USR-002",
-      name: "Sarah Johnson",
-      email: "sarahj@example.com",
-      phone: "+1 (555) 987-6543",
+      id: "#KE-002",
+      name: "Amina Hassan",
+      email: "amina.hassan@example.co.ke",
+      phone: "+254 723 876 543",
       orders: 8,
-      joined: "Mar 22, 2024",
+      joined: "22 Mar 2024",
     },
     {
-      id: "#USR-003",
-      name: "Michael Brown",
-      email: "michael.b@example.com",
-      phone: "+1 (555) 456-7890",
+      id: "#KE-003",
+      name: "Grace Wambui",
+      email: "grace.wambui@example.co.ke",
+      phone: "+254 701 234 567",
       orders: 5,
-      joined: "Apr 10, 2025",
+      joined: "10 Apr 2025",
     },
-  ];
+  ];  
 
   return (
     <div className="users-page">

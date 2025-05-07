@@ -8,25 +8,25 @@ const Dashboard = () => {
   // Mock data
   const recentOrders = [
     { 
-      id: "#ORD-2023-156", 
-      customer: "John Smith", 
-      status: "transit", 
-      date: "May 15, 2025", 
-      amount: "24.99" 
+      id: "#ORD-2025-023", 
+      customer: "Beatrice Njoki", 
+      status: "in transit", 
+      date: "15 May 2025", 
+      amount: "KSh 2,499.00" 
     },
     { 
-      id: "#ORD-2023-155", 
-      customer: "Sarah Johnson", 
+      id: "#ORD-2025-022", 
+      customer: "David Mwangi", 
       status: "delivered", 
-      date: "May 14, 2025", 
-      amount: "18.50" 
+      date: "14 May 2025", 
+      amount: "KSh 1,850.00" 
     },
     { 
-      id: "#ORD-2023-154", 
-      customer: "Michael Brown", 
+      id: "#ORD-2025-021", 
+      customer: "Grace Wanjiru", 
       status: "pending", 
-      date: "May 14, 2025", 
-      amount: "32.75" 
+      date: "14 May 2025", 
+      amount: "KSh 3,275.00" 
     },
   ];
 
