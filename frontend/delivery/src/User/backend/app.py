@@ -5,7 +5,27 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+# Configure CORS with specific settings
+CORS(app,
+     supports_credentials=True,
+     resources={
+         r"/parcels*": {
+             "origins": ["http://localhost:5173"],
+             "methods": ["GET", "POST", "PATCH", "OPTIONS"],
+             "allow_headers": ["Content-Type", "Authorization"],
+             "expose_headers": ["Content-Type"],
+             "max_age": 600
+         }
+     })
+
+# Add this after_request handler for additional headers
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS')
+    return response
 api = Api(app)
 app.config['SECRET_KEY'] = 'a9b7f8cbe34d4fd28b239872c88f199e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
