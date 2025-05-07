@@ -86,7 +86,7 @@ class UserParcels(Resource):
             destination_lon=data.get('destination_lon'),
             recipient_name=data['recipient_name'],
             recipient_phone=data['recipient_phone'],
-            recipient_email=data.get('recipient_email')
+            
         )
 
         new_parcel.driver_id = assign_driver_automatically()
