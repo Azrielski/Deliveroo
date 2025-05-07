@@ -1,50 +1,60 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { useState, useRef, useEffect } from 'react';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useState, useRef, useEffect } from "react";
 
-// Fix leaflet icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 const truckIcon = new L.Icon({
-  iconUrl: '/truck.png', // Local file in public folder
+  iconUrl: "/truck.png",
   iconSize: [45, 45],
   iconAnchor: [22, 45],
   popupAnchor: [0, -45],
-  className: 'animated-truck'
+  className: "animated-truck",
 });
 
 const destinationIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
 });
 
-export default function RouteMap({ 
-  pickup, 
-  destination, 
+export default function RouteMap({
+  pickup,
+  destination,
   route = [],
   pickupAddress,
   destinationAddress,
-  animate 
+  animate,
+  onAnimationEnd,
 }) {
   const [currentPosition, setCurrentPosition] = useState(null);
   const [progressPath, setProgressPath] = useState([]);
   const intervalRef = useRef(null);
-  
-  // Validate coordinates
+
   const getPosition = () => {
     if (pickup?.length === 2) return pickup;
     if (destination?.length === 2) return destination;
-    return [0, 0]; // Fallback position
+    return [0, 0];
   };
 
   useEffect(() => {
@@ -59,19 +69,20 @@ export default function RouteMap({
 
   const startAnimation = () => {
     if (!Array.isArray(route) || route.length < 2) return;
-    
+
     resetAnimation();
     let step = 0;
     intervalRef.current = setInterval(() => {
       if (step < route.length) {
         const coord = route[step];
-        if (coord?.length === 2) { // Validate coordinate
+        if (coord?.length === 2) {
           setCurrentPosition(coord);
-          setProgressPath(prev => [...prev, coord]);
+          setProgressPath((prev) => [...prev, coord]);
         }
         step++;
       } else {
         resetAnimation();
+        if (onAnimationEnd) onAnimationEnd();
       }
     }, 100);
   };
@@ -87,7 +98,7 @@ export default function RouteMap({
 
   return (
     <div className="h-[600px] w-full rounded-xl overflow-hidden shadow-lg relative">
-      <MapContainer 
+      <MapContainer
         center={getPosition()}
         zoom={pickup && destination ? 13 : 5}
         className="h-full"
@@ -117,9 +128,9 @@ export default function RouteMap({
 
         {/* Full route (dashed) */}
         {route.length > 0 && (
-          <Polyline 
-            positions={route} 
-            color="#2563eb" 
+          <Polyline
+            positions={route}
+            color="#2563eb"
             weight={2}
             opacity={0.5}
             dashArray="5, 5"
@@ -132,7 +143,9 @@ export default function RouteMap({
             <Popup className="text-lg font-medium">
               🚚 Pickup Location
               <br />
-              <span className="text-sm text-gray-600">{pickupAddress || "Unknown address"}</span>
+              <span className="text-sm text-gray-600">
+                {pickupAddress || "Unknown address"}
+              </span>
             </Popup>
           </Marker>
         )}
@@ -143,7 +156,9 @@ export default function RouteMap({
             <Popup className="text-lg font-medium">
               🏁 Destination
               <br />
-              <span className="text-sm text-gray-600">{destinationAddress || "Unknown address"}</span>
+              <span className="text-sm text-gray-600">
+                {destinationAddress || "Unknown address"}
+              </span>
             </Popup>
           </Marker>
         )}
@@ -157,5 +172,3 @@ export default function RouteMap({
     </div>
   );
 }
-
- 

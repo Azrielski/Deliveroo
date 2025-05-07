@@ -49,7 +49,7 @@ function CreateParcel(){
       }
 
       // Create parcel with geocoded coordinates
-      await createParcel({
+      const newParcel = await createParcel({
         ...formData,
         weight: parseFloat(formData.weight),
         pickup_lat: pickupCoords[0],
@@ -65,7 +65,7 @@ function CreateParcel(){
         pickup_address: '',
         destination_address: ''
       });
-      navigate('/');
+      navigate(`/parcels/${newParcel.id}/simulation`);
     } catch (err) {
       setError(err.message || 'Failed to create parcel. Please try again.');
     } finally {
