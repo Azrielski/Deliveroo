@@ -14,6 +14,13 @@ import AdminLayout from './Admin/AdminLayout';
 import AllOrders from './Admin/pages/AllOrders';
 import Users from './Admin/pages/Users';
 import Riders from './Admin/pages/Riders';
+// User Pages
+import { ParcelProvider } from './User/context/ParcelContext';
+import UserNavbar from './User/components/NavBar';
+import UserDashboard from './User/components/UserDashboard';
+import CreateParcel from './User/components/CreateParcel';
+import ParcelDetail from './User/components/ParcelDetail';
+import DeliverySimulation from './User/components/DeliverySimulation';
 
 function App() {
   return (
@@ -38,6 +45,27 @@ function App() {
         <Route path="users" element={<Users />} />
         <Route path="riders" element={<Riders />} />
       </Route>
+
+        {/* User Routes (Wrapped with ParcelProvider) */}
+        <Route
+          path="/user/*"
+          element={
+            <ParcelProvider>
+              <div className="min-h-screen bg-gray-50">
+                <UserNavbar />
+                <div className="w-full xl:px-20 px-6 py-8">
+                  <Routes>
+                    <Route path="/user" element={<UserDashboard />} />
+                    <Route path="create" element={<CreateParcel />} />
+                    <Route path="parcels/:id" element={<ParcelDetail />} />
+                    <Route path="parcels/:id/simulation" element={<DeliverySimulation />} />
+                  </Routes>
+                </div>
+              </div>
+            </ParcelProvider>
+          }
+        />
+
       </Routes>
     </Router>
   )
