@@ -1,0 +1,162 @@
+.users-table-container {
+    width: 100%;
+  }
+  
+  .users-table-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .users-search {
+    width: 288px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.875rem;
+  }
+  
+  .export-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .export-button:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .export-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .users-table th {
+    height: 48px;
+    padding: 0 16px;
+    text-align: left;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .users-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .user-id {
+    font-weight: 500;
+    color: #2563eb;
+  }
+  
+  .table-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .action-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  
+  .pagination-info {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .pagination-button {
+    padding: 4px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .pagination-button:hover {
+    background-color: #f3f4f6;
+   } 
+  
+  .pagination-button.active {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+  }
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%; 
+    right: 0; 
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 8px 0;
+    z-index: 100; 
+    min-width: 120px; 
+  }
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    width: 100%;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.875rem;
+    cursor: pointer;
+    color: #374151; 
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f3f4f6; 
+  }
