@@ -30,6 +30,8 @@ function App() {
         } />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/auth" element={<AuthForm />} />
+
+        
         {/* Admin routes */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
