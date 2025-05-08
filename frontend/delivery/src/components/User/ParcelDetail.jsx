@@ -252,7 +252,7 @@ function ParcelDetail() {
           {routeData && (
             <div className="flex justify-between items-center mb-4">
               <Link
-                to={`/parcels/${parcel.id}/simulation`}
+                to={`/user/parcels/${parcel.id}/simulation`}
                 className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg text-sm"
               >
                 View Live Delivery →

@@ -61,7 +61,7 @@ function App() {
                   <Routes>
                     <Route index element={<UserDashboard />} />
                     <Route path="create" element={<CreateParcel />} />
-                    <Route path="parcels/:id" element={<ParcelDetail />} />
+                    <Route path="/parcels/:id" element={<ParcelDetail />} />
                     <Route
                       path="parcels/:id/simulation"
                       element={<DeliverySimulation />}

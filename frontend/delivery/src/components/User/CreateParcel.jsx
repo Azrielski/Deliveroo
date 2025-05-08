@@ -77,7 +77,7 @@ function CreateParcel() {
         recipient_name: "",
         recipient_phone: "",
       });
-      navigate(`/parcels/${newParcel.id}/simulation`);
+      navigate(`/user/parcels/${newParcel.id}/simulation`);
     } catch (err) {
       setError(err.message || "Failed to create parcel. Please try again.");
     } finally {

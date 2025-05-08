@@ -71,7 +71,7 @@ function DeliverySimulation() {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <button
-        onClick={() => navigate(`/parcels/${id}`)}
+        onClick={() => navigate(`/user/parcels/${id}`)}
         className="mb-6 text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
       >
         ← Back to Parcel Details

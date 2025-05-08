@@ -80,7 +80,7 @@ function UserDashboard() {
           </p>
         </div>
         <Link
-          to="/create"
+          to="/user/create"
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-transform duration-200 hover:scale-105 shadow-lg"
         >
           <FiPlusCircle className="text-xl" />
@@ -197,7 +197,7 @@ function UserDashboard() {
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
                         <Link
-                          to={`/parcels/${parcel.id}`}
+                          to={`/user/parcels/${parcel.id}`}
                           className="p-2 hover:bg-blue-100 text-blue-600 rounded-lg transition"
                           aria-label="View shipment"
                         >
@@ -230,7 +230,7 @@ function UserDashboard() {
             Start by creating your first shipment.
           </p>
           <Link
-            to="/create"
+            to="/user/create"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl inline-flex items-center gap-2 transition"
           >
             <FiPlusCircle />

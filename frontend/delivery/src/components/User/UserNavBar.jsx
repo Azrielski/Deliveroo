@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { FiBox, FiUser, FiTruck } from "react-icons/fi";
 
-function Navbar() {
+function UserNavbar() {
   const { pathname } = useLocation();
 
   return (
@@ -28,7 +28,7 @@ function Navbar() {
             </Link>
 
             <Link
-              to="/create"
+              to="/user/create"
               className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform hover:scale-105 shadow-md"
             >
               <FiBox className="text-lg" />
@@ -41,4 +41,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default UserNavbar;
