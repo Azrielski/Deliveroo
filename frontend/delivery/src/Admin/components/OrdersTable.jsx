@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Eye, ExternalLink, ChevronDown } from "lucide-react";
+import OrderDetailsModal from "./OrderDetailsModal";
 import "./OrdersTable.css";
 
 const OrdersTable = () => {
@@ -30,7 +31,9 @@ const OrdersTable = () => {
     },
   ]);
 
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dropdownRefs = useRef({});
 
   const statusOptions = [
     { value: "delivered", label: "Delivered" },
@@ -57,61 +60,65 @@ const OrdersTable = () => {
     ));
   };
 
-  const StatusBadge = ({ status }) => {
-    const statusMap = {
-      delivered: "Delivered",
-      pending: "Pending",
-      transit: "In Transit",
-    };
-    return (
-      <div className={`status-badge status-${status}`}>
-        {statusMap[status]}
-      </div>
-    );
+  const handleViewOrder = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
   };
 
-  const Dropdown = ({ options, value, onChange, width = "100%" }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const triggerRef = useRef(null);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
 
-    useEffect(() => {
-      if (isOpen && triggerRef.current) {
-        triggerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
-      }
-    }, [isOpen]);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      Object.keys(dropdownRefs.current).forEach((key) => {
+        const ref = dropdownRefs.current[key];
+        if (ref && !ref.contains(event.target)) {
+          ref.classList.remove('open');
+        }
+      });
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const Dropdown = ({ options, value, onChange, width = "100%", orderId, type }) => {
+    const dropdownRef = useRef(null);
+    dropdownRefs.current[`${orderId}-${type}`] = dropdownRef;
+
+    const handleToggle = () => {
+      dropdownRef.current.classList.toggle('open');
+    };
+
+    const handleSelect = (optionValue) => {
+      onChange(optionValue);
+      dropdownRef.current.classList.remove('open');
+    };
 
     return (
-      <div className="dropdown-container" style={{ width }}>
+      <div className="dropdown-container" style={{ width }} ref={dropdownRef}>
         <button
-          ref={triggerRef}
           className="dropdown-trigger"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggle}
         >
           <span>{value}</span>
           <ChevronDown size={16} />
         </button>
-        {isOpen && (
-          <div
-            className="dropdown-menu"
-            style={{
-              left: triggerRef.current && window.innerWidth - triggerRef.current.getBoundingClientRect().right < 120 ? "auto" : 0,
-              right: triggerRef.current && window.innerWidth - triggerRef.current.getBoundingClientRect().right < 120 ? 0 : "auto",
-            }}
-          >
-            {options.map((option) => (
-              <div
-                key={option.value}
-                className="dropdown-item"
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-              >
-                {option.label}
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="dropdown-menu">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className="dropdown-item"
+              onClick={() => handleSelect(option.value)}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -147,6 +154,8 @@ const OrdersTable = () => {
                     }
                     onChange={(newStatus) => handleStatusChange(order.id, newStatus)}
                     width="120px"
+                    orderId={order.id}
+                    type="status"
                   />
                 </td>
                 <td>
@@ -155,14 +164,23 @@ const OrdersTable = () => {
                     value={order.rider}
                     onChange={(newRider) => handleRiderChange(order.id, newRider)}
                     width="120px"
+                    orderId={order.id}
+                    type="rider"
                   />
                 </td>
                 <td>
                   <div className="action-buttons">
-                    <button className="action-btn">
+                    <button 
+                      className="action-btn"
+                      onClick={() => handleViewOrder(order)}
+                      title="View Order Details"
+                    >
                       <Eye size={18} />
                     </button>
-                    <button className="action-btn">
+                    <button 
+                      className="action-btn"
+                      title="Open in New Tab"
+                    >
                       <ExternalLink size={18} />
                     </button>
                   </div>
@@ -184,6 +202,12 @@ const OrdersTable = () => {
           <button className="pagination-btn">Next</button>
         </div>
       </div>
+
+      <OrderDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        order={selectedOrder}
+      />
     </div>
   );
 };

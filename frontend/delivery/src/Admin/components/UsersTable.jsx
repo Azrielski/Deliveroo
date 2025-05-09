@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { Eye, ExternalLink, MoreHorizontal } from "lucide-react"; 
+import React, { useState, useEffect, useRef } from "react";
+import { Eye, ExternalLink, Pencil, Trash2, MoreHorizontal } from "lucide-react"; 
 import "./UsersTable.css";
 
 const UsersTable = ({ users }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [openDropdownId, setOpenDropdownId] = useState(null); 
-
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const dropdownRef = useRef(null);
+  
   const trimmedSearchTerm = searchTerm.trim().toLowerCase();
   
   const filteredUsers = users.filter(user =>
@@ -13,6 +14,43 @@ const UsersTable = ({ users }) => {
     user.email.toLowerCase().includes(trimmedSearchTerm) ||
     user.id.toLowerCase().includes(trimmedSearchTerm)
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdownId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleViewUser = (user) => {
+    // TODO: Implement view user functionality
+    console.log('View user:', user);
+    setOpenDropdownId(null);
+  };
+
+  const handleOpenInNewTab = (user) => {
+    // TODO: Implement open in new tab functionality
+    console.log('Open in new tab:', user);
+    setOpenDropdownId(null);
+  };
+
+  const handleEditUser = (user) => {
+    // TODO: Implement edit user functionality
+    console.log('Edit user:', user);
+    setOpenDropdownId(null);
+  };
+
+  const handleDeleteUser = (user) => {
+    // TODO: Implement delete user functionality
+    console.log('Delete user:', user);
+    setOpenDropdownId(null);
+  };
 
   return (
     <div className="users-table-container">
@@ -57,23 +95,28 @@ const UsersTable = ({ users }) => {
                 <td>{user.orders}</td>
                 <td>{user.joined}</td>
                 <td>
-                  <div style={{ position: 'relative' }}> 
+                  <div className="action-dropdown" ref={dropdownRef}>
                     <button
                       className="action-button"
                       onClick={() => setOpenDropdownId(openDropdownId === user.id ? null : user.id)}
+                      title="More Actions"
                     >
                       <MoreHorizontal className="action-icon" />
                     </button>
                     {openDropdownId === user.id && (
                       <div className="dropdown-menu">
-                        <button className="dropdown-item">
-                          <Eye className="action-icon" /> View
+                        <button className="dropdown-item" onClick={() => handleViewUser(user)}>
+                          <Eye className="action-icon" /> View Details
                         </button>
-                        <button className="dropdown-item">
-                          <ExternalLink className="action-icon" /> Open
+                        <button className="dropdown-item" onClick={() => handleOpenInNewTab(user)}>
+                          <ExternalLink className="action-icon" /> Open in New Tab
                         </button>
-                        <button className="dropdown-item">Edit</button>
-                        <button className="dropdown-item">Delete</button>
+                        <button className="dropdown-item" onClick={() => handleEditUser(user)}>
+                          <Pencil className="action-icon" /> Edit User
+                        </button>
+                        <button className="dropdown-item delete" onClick={() => handleDeleteUser(user)}>
+                          <Trash2 className="action-icon" /> Delete User
+                        </button>
                       </div>
                     )}
                   </div>
