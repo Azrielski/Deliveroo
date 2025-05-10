@@ -1,64 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Eye, ExternalLink, ChevronDown } from "lucide-react";
+import React, { useState } from "react";
+import { Eye, ExternalLink } from "lucide-react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import "./OrdersTable.css";
 
-const OrdersTable = () => {
-  const [orders, setOrders] = useState([
-    {
-      id: "#ORD-KE-2025-156",
-      customer: "James Mwangi",
-      pickup: "Nairobi",
-      destination: "Mombasa",
-      status: "transit",
-      rider: "Rider #12",
-    },
-    {
-      id: "#ORD-KE-2025-155",
-      customer: "Grace Wanjiku",
-      pickup: "Kisumu",
-      destination: "Eldoret",
-      status: "delivered",
-      rider: "Rider #5",
-    },
-    {
-      id: "#ORD-KE-2025-154",
-      customer: "Brian Otieno",
-      pickup: "Nakuru",
-      destination: "Thika",
-      status: "pending",
-      rider: "Unassigned",
-    },
-  ]);
-
+const OrdersTable = ({ orders, showPagination = true, showPickupDestination = false, showRider = false, statusFilter = "all", isRecent = false }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const dropdownRefs = useRef({});
-
-  const statusOptions = [
-    { value: "delivered", label: "Delivered" },
-    { value: "transit", label: "In Transit" },
-    { value: "pending", label: "Pending" },
-  ];
-
-  const riderOptions = [
-    { value: "Rider #1", label: "Rider #1" },
-    { value: "Rider #5", label: "Rider #5" },
-    { value: "Rider #12", label: "Rider #12" },
-    { value: "Unassigned", label: "Unassigned" },
-  ];
-
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrders(orders.map((order) =>
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
-  };
-
-  const handleRiderChange = (orderId, newRider) => {
-    setOrders(orders.map((order) =>
-      order.id === orderId ? { ...order, rider: newRider } : order
-    ));
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = isRecent ? 5 : 10;
 
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
@@ -70,57 +19,71 @@ const OrdersTable = () => {
     setSelectedOrder(null);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      Object.keys(dropdownRefs.current).forEach((key) => {
-        const ref = dropdownRefs.current[key];
-        if (ref && !ref.contains(event.target)) {
-          ref.classList.remove('open');
-        }
-      });
-    };
+  // Filter orders based on status
+  const filteredOrders = statusFilter === "all" 
+    ? orders 
+    : orders.filter(order => order.status === statusFilter);
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  // Pagination logic
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentOrders = filteredOrders.slice(startIndex, endIndex);
 
-  const Dropdown = ({ options, value, onChange, width = "100%", orderId, type }) => {
-    const dropdownRef = useRef(null);
-    dropdownRefs.current[`${orderId}-${type}`] = dropdownRef;
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
-    const handleToggle = () => {
-      dropdownRef.current.classList.toggle('open');
-    };
+  const renderPaginationButtons = () => {
+    if (!showPagination) return null;
 
-    const handleSelect = (optionValue) => {
-      onChange(optionValue);
-      dropdownRef.current.classList.remove('open');
-    };
+    const buttons = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-    return (
-      <div className="dropdown-container" style={{ width }} ref={dropdownRef}>
-        <button
-          className="dropdown-trigger"
-          onClick={handleToggle}
-        >
-          <span>{value}</span>
-          <ChevronDown size={16} />
-        </button>
-        <div className="dropdown-menu">
-          {options.map((option) => (
-            <div
-              key={option.value}
-              className="dropdown-item"
-              onClick={() => handleSelect(option.value)}
-            >
-              {option.label}
-            </div>
-          ))}
-        </div>
-      </div>
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // Previous button
+    buttons.push(
+      <button
+        key="prev"
+        className={`pagination-btn ${currentPage === 1 ? 'disabled' : ''}`}
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
     );
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i}
+          className={`pagination-btn ${currentPage === i ? 'active' : ''}`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    // Next button
+    buttons.push(
+      <button
+        key="next"
+        className={`pagination-btn ${currentPage === totalPages ? 'disabled' : ''}`}
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    );
+
+    return buttons;
   };
 
   return (
@@ -131,57 +94,46 @@ const OrdersTable = () => {
             <tr>
               <th>ORDER ID</th>
               <th>CUSTOMER</th>
-              <th>PICKUP</th>
-              <th>DESTINATION</th>
+              {showPickupDestination && <th>PICKUP</th>}
+              {showPickupDestination && <th>DESTINATION</th>}
               <th>STATUS</th>
-              <th>RIDER</th>
+              {showRider && <th>RIDER</th>}
               <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {currentOrders.map((order) => (
               <tr key={order.id}>
                 <td className="order-id-cell">{order.id}</td>
                 <td>{order.customer}</td>
-                <td>{order.pickup}</td>
-                <td>{order.destination}</td>
+                {showPickupDestination && <td>{order.pickup}</td>}
+                {showPickupDestination && <td>{order.destination}</td>}
                 <td>
-                  <Dropdown
-                    options={statusOptions}
-                    value={
-                      order.status === "transit" ? "In Transit" :
-                      order.status === "delivered" ? "Delivered" : "Pending"
-                    }
-                    onChange={(newStatus) => handleStatusChange(order.id, newStatus)}
-                    width="120px"
-                    orderId={order.id}
-                    type="status"
-                  />
+                  <span className={`status-badge status-${order.status}`}>
+                    {order.status === "transit" ? "In Transit" :
+                     order.status === "delivered" ? "Delivered" : "Pending"}
+                  </span>
                 </td>
-                <td>
-                  <Dropdown
-                    options={riderOptions}
-                    value={order.rider}
-                    onChange={(newRider) => handleRiderChange(order.id, newRider)}
-                    width="120px"
-                    orderId={order.id}
-                    type="rider"
-                  />
-                </td>
+                {showRider && (
+                  <td className="rider-cell">
+                    {order.rider || "Unassigned"}
+                  </td>
+                )}
                 <td>
                   <div className="action-buttons">
-                    <button 
+                    <button
                       className="action-btn"
                       onClick={() => handleViewOrder(order)}
-                      title="View Order Details"
+                      title="View Details"
                     >
-                      <Eye size={18} />
+                      <Eye size={16} />
                     </button>
-                    <button 
+                    <button
                       className="action-btn"
+                      onClick={() => window.open(`/admin/orders/${order.id}`, '_blank')}
                       title="Open in New Tab"
                     >
-                      <ExternalLink size={18} />
+                      <ExternalLink size={16} />
                     </button>
                   </div>
                 </td>
@@ -190,18 +142,17 @@ const OrdersTable = () => {
           </tbody>
         </table>
       </div>
-      <div className="pagination">
-        <div className="pagination-info">
-          Showing 1 to 3 of 156 results
+
+      {showPagination && (
+        <div className="pagination">
+          <div className="pagination-info">
+            Showing {startIndex + 1} to {Math.min(endIndex, filteredOrders.length)} of {filteredOrders.length} results
+          </div>
+          <div className="pagination-controls">
+            {renderPaginationButtons()}
+          </div>
         </div>
-        <div className="pagination-controls">
-          <button className="pagination-btn">Previous</button>
-          <button className="pagination-btn active">1</button>
-          <button className="pagination-btn">2</button>
-          <button className="pagination-btn">3</button>
-          <button className="pagination-btn">Next</button>
-        </div>
-      </div>
+      )}
 
       <OrderDetailsModal
         isOpen={isModalOpen}

@@ -1,11 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Eye, ExternalLink, Pencil, Trash2, MoreHorizontal } from "lucide-react"; 
+import React, { useState } from "react";
+import { Eye, ExternalLink, Edit, Trash2 } from "lucide-react";
+import UserDetailsModal from "./UserDetailsModal";
+import UserDeleteConfirmationModal from "./UserDeleteConfirmationModal";
+import EditUserModal from "./EditUserModal";
 import "./UsersTable.css";
 
-const UsersTable = ({ users }) => {
+const UsersTable = ({ users, onDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [openDropdownId, setOpenDropdownId] = useState(null);
-  const dropdownRef = useRef(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   
   const trimmedSearchTerm = searchTerm.trim().toLowerCase();
   
@@ -15,41 +22,73 @@ const UsersTable = ({ users }) => {
     user.id.toLowerCase().includes(trimmedSearchTerm)
   );
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpenDropdownId(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const handleViewUser = (user) => {
-    // TODO: Implement view user functionality
-    console.log('View user:', user);
-    setOpenDropdownId(null);
+    setSelectedUser(user);
+    setIsViewModalOpen(true);
   };
 
   const handleOpenInNewTab = (user) => {
-    // TODO: Implement open in new tab functionality
-    console.log('Open in new tab:', user);
-    setOpenDropdownId(null);
+    window.open(`/admin/users/${user.id}`, '_blank');
   };
 
   const handleEditUser = (user) => {
-    // TODO: Implement edit user functionality
-    console.log('Edit user:', user);
-    setOpenDropdownId(null);
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
   };
 
-  const handleDeleteUser = (user) => {
-    // TODO: Implement delete user functionality
-    console.log('Delete user:', user);
-    setOpenDropdownId(null);
+  const handleDeleteClick = (user) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+    setDeleteError(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedUser) return;
+
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+
+      // Call the API to delete the user
+      const response = await fetch(`/api/users/${selectedUser.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete user');
+      }
+
+      // Call the parent component's onDeleteUser callback
+      onDeleteUser(selectedUser.id);
+      
+      // Close the modal and reset state
+      setIsDeleteModalOpen(false);
+      setSelectedUser(null);
+    } catch (error) {
+      setDeleteError(error.message || 'An error occurred while deleting the user');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleSaveEdit = (updatedUser) => {
+    // TODO: Implement actual update functionality
+    console.log('Updating user:', updatedUser);
+    setIsEditModalOpen(false);
+  };
+
+  const handleCloseViewModal = () => {
+    setIsViewModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedUser(null);
+    setDeleteError(null);
   };
 
   return (
@@ -95,30 +134,36 @@ const UsersTable = ({ users }) => {
                 <td>{user.orders}</td>
                 <td>{user.joined}</td>
                 <td>
-                  <div className="action-dropdown" ref={dropdownRef}>
-                    <button
-                      className="action-button"
-                      onClick={() => setOpenDropdownId(openDropdownId === user.id ? null : user.id)}
-                      title="More Actions"
+                  <div className="table-actions">
+                    <button 
+                      className="action-button" 
+                      onClick={() => handleViewUser(user)}
+                      title="View Details"
                     >
-                      <MoreHorizontal className="action-icon" />
+                      <Eye className="action-icon" />
                     </button>
-                    {openDropdownId === user.id && (
-                      <div className="dropdown-menu">
-                        <button className="dropdown-item" onClick={() => handleViewUser(user)}>
-                          <Eye className="action-icon" /> View Details
-                        </button>
-                        <button className="dropdown-item" onClick={() => handleOpenInNewTab(user)}>
-                          <ExternalLink className="action-icon" /> Open in New Tab
-                        </button>
-                        <button className="dropdown-item" onClick={() => handleEditUser(user)}>
-                          <Pencil className="action-icon" /> Edit User
-                        </button>
-                        <button className="dropdown-item delete" onClick={() => handleDeleteUser(user)}>
-                          <Trash2 className="action-icon" /> Delete User
-                        </button>
-                      </div>
-                    )}
+                    <button 
+                      className="action-button"
+                      onClick={() => handleOpenInNewTab(user)}
+                      title="Open in New Tab"
+                    >
+                      <ExternalLink className="action-icon" />
+                    </button>
+                    <button 
+                      className="action-button"
+                      onClick={() => handleEditUser(user)}
+                      title="Edit User"
+                    >
+                      <Edit className="action-icon" />
+                    </button>
+                    <button 
+                      className="action-button delete-action"
+                      onClick={() => handleDeleteClick(user)}
+                      title="Delete User"
+                      disabled={isDeleting}
+                    >
+                      <Trash2 className="action-icon" />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -143,6 +188,30 @@ const UsersTable = ({ users }) => {
           <button className="pagination-button">Next</button>
         </div>
       </div>
+
+      {/* View User Modal */}
+      <UserDetailsModal
+        isOpen={isViewModalOpen}
+        onClose={handleCloseViewModal}
+        user={selectedUser}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <UserDeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteConfirm}
+        userName={selectedUser?.name}
+        isDeleting={isDeleting}
+        error={deleteError}
+      />
+
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        user={selectedUser}
+        onSave={handleSaveEdit}
+      />
     </div>
   );
 };

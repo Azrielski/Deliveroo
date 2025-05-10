@@ -116,6 +116,16 @@ const Riders = () => {
     closeModal();
   };
 
+  const handleDeleteRider = (riderId) => {
+    // Remove from all riders
+    setAllRiders(allRiders.filter(rider => rider.id !== riderId));
+    
+    // Remove from available or busy riders
+    const riderNumber = riderId.replace('#RDR-', '#');
+    setAvailableRiders(availableRiders.filter(rider => rider.riderId !== `Rider ${riderNumber}`));
+    setBusyRiders(busyRiders.filter(rider => rider.riderId !== `Rider ${riderNumber}`));
+  };
+
   return (
     <div className="riders-page">
       <div className="riders-header">
@@ -157,10 +167,9 @@ const Riders = () => {
       
       <div className="riders-table-section">
         <h2 className="section-title">All Riders</h2>
-        <RidersTable riders={allRiders} />
+        <RidersTable riders={allRiders} onDeleteRider={handleDeleteRider} />
       </div>
       
-      {/* Add Rider Modal */}
       <AddRiderModal 
         isOpen={isModalOpen} 
         onClose={closeModal}

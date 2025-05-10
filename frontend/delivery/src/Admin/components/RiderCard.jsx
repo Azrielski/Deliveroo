@@ -22,9 +22,9 @@ const RiderCard = ({ name, riderId, status, ordersCount = 0 }) => {
           {isAvailable ? "Available" : `Delivering ${ordersCount} ${ordersCount === 1 ? "order" : "orders"}`}
         </span>
         
-        <button className={`rider-card-button ${!isAvailable ? "view-orders-button" : ""}`}>
+        {/* <button className={`rider-card-button ${!isAvailable ? "view-orders-button" : ""}`}>
           {isAvailable ? "Assign Order" : "View Orders"}
-        </button>
+        </button> */}
       </div>
     </div>
   );

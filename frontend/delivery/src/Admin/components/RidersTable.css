@@ -71,19 +71,31 @@
 
 .action-button:hover {
   background-color: #f9fafb;
-}
-
-.delete-action {
-  color: #ef4444;
-}
-
-.delete-action:hover {
-  border-color: #ef4444;
+  border-color: #d1d5db;
 }
 
 .action-icon {
   width: 16px;
   height: 16px;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.action-button:hover .action-icon {
+  color: #2563eb;
+}
+
+.delete-action {
+  color: #6b7280;
+}
+
+.delete-action:hover {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+}
+
+.delete-action:hover .action-icon {
+  color: #ef4444;
 }
 
 /* Responsive styles */
@@ -91,7 +103,13 @@
   .riders-table-container {
     overflow-x: auto;
   }
+  
   .action-button {
     padding: 8px;
+  }
+  
+  .action-icon {
+    width: 18px;
+    height: 18px;
   }
 }
