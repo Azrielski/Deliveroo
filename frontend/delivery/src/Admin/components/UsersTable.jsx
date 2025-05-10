@@ -22,6 +22,47 @@ const UsersTable = ({ users, onDeleteUser }) => {
     user.id.toLowerCase().includes(trimmedSearchTerm)
   );
 
+  const handleExport = () => {
+    // Get the data to export (use filtered users if search is active, otherwise all users)
+    const dataToExport = filteredUsers.length > 0 ? filteredUsers : users;
+    
+    // Create CSV headers
+    const headers = ['User ID', 'Name', 'Email', 'Phone', 'Orders', 'Joined Date'];
+    
+    // Convert data to CSV format
+    const csvContent = [
+      headers.join(','),
+      ...dataToExport.map(user => [
+        user.id,
+        user.name,
+        user.email,
+        user.phone,
+        user.orders,
+        user.joined
+      ].join(','))
+    ].join('\n');
+    
+    // Create a Blob with the CSV content
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    
+    // Create a download link
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    // Set the filename with current date
+    const date = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `users_export_${date}.csv`);
+    
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const handleViewUser = (user) => {
     setSelectedUser(user);
     setIsViewModalOpen(true);
@@ -103,7 +144,7 @@ const UsersTable = ({ users, onDeleteUser }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="export-button">
+        <button className="export-button" onClick={handleExport}>
           Export
           <svg className="export-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -178,7 +219,7 @@ const UsersTable = ({ users, onDeleteUser }) => {
 
       <div className="table-pagination">
         <p className="pagination-info">
-          Showing 1 to 3 of 586 users
+          Showing {filteredUsers.length} of {users.length} users
         </p>
         <div className="pagination-buttons">
           <button className="pagination-button">Previous</button>
