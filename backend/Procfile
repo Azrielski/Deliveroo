@@ -1,8 +1,3 @@
-# For render.yaml
-services:
-  - type: web
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:App --bind 0.0.0.0:$PORT
 
 # OR for Procfile
-web: gunicorn wsgi:App
+web: gunicorn backend.wsgi:App
