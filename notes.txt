@@ -187,3 +187,38 @@ def send_password_reset_email():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+import jwt
+
+secret_key = "bb7523de87660149c8e11db73e41bce56afbbe1ea1324a731c97c415b493911c"
+token = "http://localhost:5174/verify-email?token=-M7ZvW9u_NmYt-8_gM-Qr5NCIXRWuxUXM-gfSHBl0PA"
+
+try:
+    decoded_token = jwt.decode(token, secret_key, algorithms=["HS256"])
+    print("Decoded Token:", decoded_token)
+except jwt.ExpiredSignatureError:
+    print("Token has expired!")
+except jwt.InvalidTokenError:
+    print("Invalid token format!")
+
+
+
+import jwt
+
+secret_key = "bb7523de87660149c8e11db73e41bce56afbbe1ea1324a731c97c415b493911c"
+
+
+token = "-M7ZvW9u_NmYt-8_gM-Qr5NCIXRWuxUXM-gfSHBl0PA"  
+
+try:
+    decoded_token = jwt.decode(token, secret_key, algorithms=["HS256"])
+    print("Decoded Token:", decoded_token)
+except jwt.ExpiredSignatureError:
+    print("Token has expired!")
+except jwt.InvalidTokenError:
+    print("Invalid token format!")
+
+
+

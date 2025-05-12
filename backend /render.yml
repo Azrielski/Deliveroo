@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: my-flask-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://postgres:Marco2650@localhost:5432/deliveroo
+      - key: SECRET_KEY
+        value: bb7523de87660149c8e11db73e41bce56afbbe1ea1324a731c97c415b493911c
+      - key: FLASK_ENV
+        value: production
