@@ -1,0 +1,238 @@
+/* ServiceModal.css */
+.service-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+  }
+  
+  .service-modal-content {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalFadeIn 0.3s ease forwards;
+  }
+  
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .service-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+  }
+  
+  .service-modal-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+  
+  .modal-close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+  
+  .modal-close-button:hover {
+    color: #333;
+  }
+  
+  .service-modal-body {
+    padding: 25px;
+  }
+  
+  .service-modal-image {
+    margin-bottom: 20px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .service-modal-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .service-modal-description {
+    margin-bottom: 25px;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .service-modal-features {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+  }
+  
+  .service-modal-features h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .service-modal-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .service-modal-features li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    color: #555;
+  }
+  
+  .feature-check {
+    color: steelblue;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  
+  .service-modal-faqs {
+    margin-bottom: 20px;
+  }
+  
+  .service-modal-faqs h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .accordion-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  
+  .accordion-header {
+    padding: 15px;
+    background-color: #f8f8f8;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s;
+  }
+  
+  .accordion-header:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .accordion-body {
+    padding: 15px;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .accordion-body p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  .service-modal-footer {
+    padding: 20px 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    border-top: 1px solid #e0e0e0;
+    background-color: #f8f8f8;
+    position: sticky;
+    bottom: 0;
+  }
+  
+  .btn-primary {
+    background-color: steelblue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #3a6b99;
+  }
+  
+  .btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #d0d0d0;
+  }
+  
+  @media (max-width: 768px) {
+    .service-modal-content {
+      max-height: 85vh;
+    }
+    
+    .service-modal-header {
+      padding: 15px 20px;
+    }
+    
+    .service-modal-body {
+      padding: 20px;
+    }
+    
+    .service-modal-footer {
+      padding: 15px 20px;
+      flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary {
+      width: 100%;
+    }
+  }

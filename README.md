@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 🚚 Deliveroo Backend
 
 This is the Flask backend for Deliveroo, a parcel delivery platform that allows users to send parcels and admins to track them. The backend handles authentication, parcel creation, user dashboards, and admin oversight, all connected to a PostgreSQL database.
@@ -123,3 +124,17 @@ All routes accept and return JSON.
 📊 Add parcel filtering and search
 
 🛑 Add parcel cancelation
+=======
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+>>>>>>> 731efb3 (Integrated the backend and frontend)

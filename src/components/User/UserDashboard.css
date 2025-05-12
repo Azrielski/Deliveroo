@@ -1,0 +1,203 @@
+/* UserDashboard.css - Enhanced styling for the user dashboard */
+
+/* Add some animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-title {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.dashboard-title:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: #0d6efd;
+  border-radius: 2px;
+}
+
+/* Stats cards enhancements */
+.stats-card {
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.stats-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stats-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stats-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.stats-icon {
+  transition: all 0.3s ease;
+}
+
+.stats-card:hover .stats-icon {
+  transform: scale(1.15);
+}
+
+/* Table row hover effect */
+.table tr {
+  transition: all 0.2s ease;
+}
+
+.table tr:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.1);
+}
+
+/* Badge styling */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5em 0.7em;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Button hover effects */
+.btn-outline-primary:hover {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-outline-info:hover {
+  box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+}
+
+.btn-outline-danger:hover {
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Map container */
+.delivery-map-placeholder {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.delivery-map-placeholder img {
+  width: 100%;
+  transition: all 0.5s ease;
+}
+
+.delivery-map-placeholder:hover img {
+  transform: scale(1.02);
+}
+
+/* Profile image upload */
+.profile-upload-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.profile-upload-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Alert animation */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert {
+  animation: slideInDown 0.3s ease forwards;
+  position: relative;
+  z-index: 1000;
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Make dashboard responsive */
+@media (max-width: 767.98px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .card-header .btn {
+    margin-top: 0.5rem;
+  }
+  
+  .stats-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .stats-value {
+    font-size: 1.5rem;
+  }
+  
+  .table th, .table td {
+    padding: 0.75rem;
+  }
+}
+
+/* Card header with icon */
+.card-header h5 {
+  display: flex;
+  align-items: center;
+}
+
+.card-header h5 svg {
+  margin-right: 0.5rem;
+}
+
+/* Action buttons styling */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table .btn-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+/* Modal animation */
+.modal-content {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+/* Spinner center */
+.spinner-border {
+  display: block;
+  margin: 1rem auto;
+}
