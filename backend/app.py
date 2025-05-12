@@ -1,3 +1,7 @@
+
+import sys
+sys.path.append("backend")
+
 from app import create_app, mail  # Import the app factory and mail instance
 from flask import request, current_app, render_template_string
 from flask_mail import Message
