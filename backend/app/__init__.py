@@ -5,22 +5,19 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_migrate import Migrate
-from backend.config import Config  # Correct import
-
-
-from models import db
+from backend.config import Config
+from backend.models import db  # Ensure correct import path
 
 # Initialize extensions
 mail = Mail()
 migrate = Migrate()
 
-def create_app(config_class=Config):  # Pass the class directly
-
+def create_app(*args, **kwargs):  
     """Application factory function"""
     app = Flask(__name__)
     
     # Load configuration
-    app.config.from_object(config_class)
+    app.config.from_object(Config)  # Fix config reference
     
     # Initialize extensions
     db.init_app(app)
@@ -29,13 +26,9 @@ def create_app(config_class=Config):  # Pass the class directly
     
     with app.app_context():
         # Register blueprints
-        from app.routes.auth import auth_bp
+        from app.routes.auth import auth_bp  # Fix import path
         app.register_blueprint(auth_bp)
-        
-        # Add more blueprints as needed
-        # from app.routes.user import user_bp
-        # app.register_blueprint(user_bp)
-        
+
         # Register error handlers
         register_error_handlers(app)
         
