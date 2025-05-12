@@ -1,0 +1,161 @@
+.services-container {
+  display: flex; /* Use flexbox for layout */
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  align-items: center; /* Center items vertically */
+  padding: 40px 20px; /* Add padding around the container */
+  background-color: var(--background-color); /* Light background */
+  gap: 30px; /* Space between columns */
+  font-family: 'Inter', sans-serif; /* Use Inter font */
+  border-radius: 8px; /* Slightly rounded corners for the container */
+  max-width: 1200px; /* Max width for larger screens */
+  margin: 40px auto; /* Center the container with margin */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+/* Left column containing the image */
+.image-column {
+  flex: 1; /* Take up available space */
+  min-width: 280px; /* Minimum width before wrapping */
+  display: flex;
+  justify-content: center; /* Center image horizontally */
+  align-items: center; /* Center image vertically */
+}
+
+/* Styling for the service image */
+.service-image {
+  max-width: 100%; /* Ensure image is responsive */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Rounded corners for the image */
+  object-fit: cover; /* Cover the area nicely */
+}
+
+/* Right column containing text and stats */
+.content-column {
+  flex: 1.5; /* Take up slightly more space than the image */
+  min-width: 300px; /* Minimum width before wrapping */
+  display: flex;
+  flex-direction: column; /* Stack headline and stats vertically */
+  gap: 25px; /* Space between headline and stats grid */
+}
+
+/* Styling for the headline text */
+.headline {
+  font-size: 2rem; /* Larger font size for the headline */
+  font-weight: 600; /* Semi-bold */
+  color: var(--dark-steel-blue); /* Use darker steel blue for headline */
+  line-height: 1.3; /* Improve readability */
+  margin-bottom: 0; /* Remove default margin */
+}
+
+/* Grid container for the statistics */
+.stats-grid {
+  display: grid; /* Use grid layout for stats */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid columns */
+  gap: 20px; /* Space between grid items */
+}
+
+/* Styling for individual statistic items */
+.stat-item {
+  background-color: var(--white-color); /* White background for stat items */
+  padding: 15px; /* Padding inside each stat item */
+  border-radius: 8px; /* Rounded corners */
+  border-left: 4px solid var(--steel-blue); /* Accent border on the left */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+  transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.stat-item:hover {
+    transform: translateY(-3px); /* Slight lift on hover */
+}
+
+/* Styling for the large number in stats */
+.stat-number {
+  font-size: 1.8rem; /* Large font size for the number */
+  font-weight: 700; /* Bold */
+  color: var(--steel-blue); /* Use primary steel blue color */
+  margin-bottom: 5px; /* Space below the number */
+}
+
+/* Styling for the descriptive label in stats */
+.stat-label {
+  font-size: 0.9rem; /* Smaller font size for the label */
+  color: var(--text-color); /* Standard text color */
+  line-height: 1.4; /* Improve readability */
+}
+
+.stat-number {
+  transition: all 0.3s ease-out; /* Smooth transition for number changes */
+}
+
+/* Optional: Add a slight scale effect on animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.stat-item.animating .stat-number {
+  animation: pulse 0.5s ease-in-out;
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--text-color);
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .services-container {
+    flex-direction: column; /* Stack columns vertically */
+    padding: 30px 15px; /* Adjust padding */
+    margin: 20px auto; /* Adjust margin */
+  }
+
+  .headline {
+    font-size: 1.5rem; /* Adjust headline font size */
+    text-align: center; /* Center headline */
+  }
+
+  .content-column {
+     align-items: center; /* Center content in the column */
+     text-align: center; /* Center text */
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjust grid for smaller screens */
+    width: 100%; /* Ensure grid takes full width */
+  }
+
+   .stat-item {
+    text-align: center; /* Center text within stat items */
+    border-left: none; /* Remove left border */
+    border-top: 4px solid var(--steel-blue); /* Add top border instead */
+    padding: 12px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem; /* Adjust stat number size */
+  }
+
+  .stat-label {
+    font-size: 0.8rem; /* Adjust stat label size */
+  }
+}
+
+@media (max-width: 480px) {
+    .headline {
+        font-size: 1.3rem; /* Further adjust headline size */
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr; /* Single column grid on very small screens */
+        gap: 15px;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+    }
+}
