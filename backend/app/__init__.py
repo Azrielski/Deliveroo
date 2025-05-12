@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_migrate import Migrate
 from backend.config import Config
-from backend.models import db  # Ensure correct import path
+from backend.models import db
 
 # Initialize extensions
 mail = Mail()
@@ -15,9 +15,13 @@ migrate = Migrate()
 def create_app(*args, **kwargs):  
     """Application factory function"""
     app = Flask(__name__)
+
+    @app.route('/')
+    def index():
+        return {"message": "Welcome!"}, 200 
     
     # Load configuration
-    app.config.from_object(Config)  # Fix config reference
+    app.config.from_object(Config)
     
     # Initialize extensions
     db.init_app(app)
@@ -26,7 +30,7 @@ def create_app(*args, **kwargs):
     
     with app.app_context():
         # Register blueprints
-        from app.routes.auth import auth_bp  # Fix import path
+        from app.routes.auth import auth_bp
         app.register_blueprint(auth_bp)
 
         # Register error handlers
