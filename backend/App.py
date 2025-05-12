@@ -6,6 +6,6 @@ def create_app(*args, **kwargs):
 
     @app.route('/')
     def home():
-        return "Hello, World!"  # ✅ Correct response
+        return "Hello, World!" 
 
-    return app  # ✅ Ensure Flask app instance is properly returned
+    return app  
