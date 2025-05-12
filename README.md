@@ -4,7 +4,7 @@ This is the Flask backend for Deliveroo, a parcel delivery platform that allows 
 
 NOTE:
 
-This is the user flow of the aoo, the app has a few bugs but functions, there were complications with connecting the admin dashboard to the program.This is also because of
+This is the user flow of the app, the app has a few bugs but functions, there were complications with connecting the admin dashboard to the program.This is also because of
 
 THE BRANCH TO USE IS CALLED "Final".
 
